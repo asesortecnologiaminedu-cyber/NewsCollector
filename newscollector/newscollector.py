@@ -1,4 +1,3 @@
-import pkg_resources
 import json
 import pandas as pd
 from datetime import *
@@ -19,6 +18,7 @@ import random
 import argparse
 import webbrowser
 import os
+import importlib.resources
 warnings.filterwarnings("ignore")
 
 class NewsCollector:
@@ -110,7 +110,7 @@ class Processer:
     def compute_tfidf(df):
         # Function that computes the TFIDF values for all words in the article bodies
         try:
-            tfidf_df = TfidfVectorizer().fit_transform(df['clean_body']).todense()
+            tfidf_df = TfidfVectorizer().fit_transform(df['clean_body']).toarray()
             return tfidf_df
         except:
             raise Exception(f'Error in "Processer.compute_tfidf()"')
@@ -260,7 +260,9 @@ class Helper:
                 return template, template_path
             else:
                 template = 'newsletter.html'
-                template_path = pkg_resources.resource_filename(__name__, 'templates')
+                # Get the package directory
+                package_dir = os.path.dirname(os.path.abspath(__file__))
+                template_path = os.path.join(package_dir, 'templates')
                 print('INFO: Using package default "newsletter.html" as template file.')
                 return template, template_path
         except:
@@ -275,18 +277,22 @@ class Helper:
             return sources
         except:
             try:
-                default_file = pkg_resources.resource_filename(__name__, 'sources.json')
+                # Get the package directory
+                package_dir = os.path.dirname(os.path.abspath(__file__))
+                default_file = os.path.join(package_dir, 'sources.json')
                 with open(default_file) as data:
                     sources = json.load(data)
-                print('INFO: Using package default "sources.json" as source file.')
-                return sources
+                    print('INFO: Using package default "sources.json" as source file.')
+                    return sources
             except:
                 raise Exception(f'Error in "Helper.load_sources()"')
 
     def validate_output_filename(file, news_date):
         try:
             if file == 'default':
-                output_path = pkg_resources.resource_filename(__name__, 'rendered')
+                # Get the package directory
+                package_dir = os.path.dirname(os.path.abspath(__file__))
+                output_path = os.path.join(package_dir, 'rendered')
                 if not os.path.isdir(output_path):
                     os.makedirs(output_path)
                 file = os.path.join(output_path, f'newsletter_{news_date}.html')
@@ -334,8 +340,8 @@ class Helper:
             df = df[df.body != '']
             df = df[df.image_url != '']
 
-            df = df[df.title.str.count('\s+').ge(3)] #keep only titles having more than 3 spaces in the title
-            df = df[df.body.str.count('\s+').ge(20)] #keep only titles having more than 20 spaces in the body
+            df = df[df.title.str.count(r'\s+').ge(3)]
+            df = df[df.body.str.count(r'\s+').ge(20)]
 
             return df
         except:
