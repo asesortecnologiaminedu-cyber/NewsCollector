@@ -136,24 +136,9 @@ class Processer:
         except:
              raise Exception(f'Error in "Processer.find_clusters()"')
 
-    def find_featured_clusters(clusters, null_cluster_img="https://images.unsplash.com/photo-1505244783088-5a36f166e5b5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2071&q=80"):
+    def find_featured_clusters(clusters):
         try:
-            featured_clusters = {}
-            for i in clusters.keys():
-                if len(set([j["source"] for j in clusters[i]])) > 1:
-                    featured_clusters[i] = clusters[i]
-            for i in range(len(featured_clusters), 6, 1):
-                featured_clusters[f'nan_{i}'] = [{"source":None, 
-                                        "url": None, 
-                                        "date":None, 
-                                        "time":None,
-                                        "title":"No article found 😥",
-                                        "body": "",
-                                        "summary": None,
-                                        "keywords": None,
-                                        "image_url": null_cluster_img,
-                                        "clean_body": None}]
-            return featured_clusters
+            return clusters
         except:
             raise Exception(f'Error in "Processer.find_featured_clusters()"')
 
@@ -162,78 +147,33 @@ class Processer:
             newsletter = flask.Flask('newsletter', template_folder=template_path)
 
             Helper.shuffle_content(clusters_dict)
-            similar_articles = Helper.prettify_similar(clusters_dict)
+
+            template_clusters = []
+            for key in list(clusters_dict):
+                articles = clusters_dict[key]
+                if not articles:
+                    continue
+                main = articles[0]
+                cluster_data = {
+                    'source': main['source'],
+                    'url': main['url'],
+                    'pic': main['image_url'],
+                    'title': main['title'],
+                    'body': main['body'],
+                    'similar': []
+                }
+                for sim in articles[1:]:
+                    cluster_data['similar'].append({
+                        'source': sim['source'],
+                        'url': sim['url']
+                    })
+                template_clusters.append(cluster_data)
 
             with newsletter.app_context():
-                rendered = flask.render_template(template, \
-                                                news_name=news_name,\
-                                                news_date=news_date,\
-                                                source00=clusters_dict[list(clusters_dict)[0]][0]['source'],\
-                                                source01=clusters_dict[list(clusters_dict)[1]][0]['source'],\
-                                                source02=clusters_dict[list(clusters_dict)[2]][0]['source'],\
-                                                source03=clusters_dict[list(clusters_dict)[3]][0]['source'],\
-                                                source04=clusters_dict[list(clusters_dict)[4]][0]['source'],\
-                                                source05=clusters_dict[list(clusters_dict)[5]][0]['source'],\
-                                                url00=clusters_dict[list(clusters_dict)[0]][0]['url'],\
-                                                url01=clusters_dict[list(clusters_dict)[1]][0]['url'],\
-                                                url02=clusters_dict[list(clusters_dict)[2]][0]['url'],\
-                                                url03=clusters_dict[list(clusters_dict)[3]][0]['url'],\
-                                                url05=clusters_dict[list(clusters_dict)[5]][0]['url'],\
-                                                pic00=clusters_dict[list(clusters_dict)[0]][0]['image_url'],\
-                                                pic01=clusters_dict[list(clusters_dict)[1]][0]['image_url'],\
-                                                pic02=clusters_dict[list(clusters_dict)[2]][0]['image_url'],\
-                                                pic03=clusters_dict[list(clusters_dict)[3]][0]['image_url'],\
-                                                pic04=clusters_dict[list(clusters_dict)[4]][0]['image_url'],\
-                                                pic05=clusters_dict[list(clusters_dict)[5]][0]['image_url'],\
-                                                title00=clusters_dict[list(clusters_dict)[0]][0]['title'],\
-                                                title01=clusters_dict[list(clusters_dict)[1]][0]['title'],\
-                                                title02=clusters_dict[list(clusters_dict)[2]][0]['title'],\
-                                                title03=clusters_dict[list(clusters_dict)[3]][0]['title'],\
-                                                title04=clusters_dict[list(clusters_dict)[4]][0]['title'],\
-                                                title05=clusters_dict[list(clusters_dict)[5]][0]['title'],\
-                                                body00=clusters_dict[list(clusters_dict)[0]][0]['body'],\
-                                                body01=clusters_dict[list(clusters_dict)[1]][0]['body'],\
-                                                body02=clusters_dict[list(clusters_dict)[2]][0]['body'],\
-                                                body03=clusters_dict[list(clusters_dict)[3]][0]['body'],\
-                                                body04=clusters_dict[list(clusters_dict)[4]][0]['body'],\
-                                                body05=clusters_dict[list(clusters_dict)[5]][0]['body'],\
-                                                cluster00_0_source=f"{similar_articles[list(similar_articles)[0]]['source'][0]}",\
-                                                cluster00_1_source=f"{similar_articles[list(similar_articles)[0]]['source'][1]}",\
-                                                cluster00_2_source=f"{similar_articles[list(similar_articles)[0]]['source'][2]}",\
-                                                cluster01_0_source=f"{similar_articles[list(similar_articles)[1]]['source'][0]}",\
-                                                cluster01_1_source=f"{similar_articles[list(similar_articles)[1]]['source'][1]}",\
-                                                cluster01_2_source=f"{similar_articles[list(similar_articles)[1]]['source'][2]}",\
-                                                cluster02_0_source=f"{similar_articles[list(similar_articles)[2]]['source'][0]}",\
-                                                cluster02_1_source=f"{similar_articles[list(similar_articles)[2]]['source'][1]}",\
-                                                cluster02_2_source=f"{similar_articles[list(similar_articles)[2]]['source'][2]}",\
-                                                cluster03_0_source=f"{similar_articles[list(similar_articles)[3]]['source'][0]}",\
-                                                cluster03_1_source=f"{similar_articles[list(similar_articles)[3]]['source'][1]}",\
-                                                cluster03_2_source=f"{similar_articles[list(similar_articles)[3]]['source'][2]}",\
-                                                cluster04_0_source=f"{similar_articles[list(similar_articles)[4]]['source'][0]}",\
-                                                cluster04_1_source=f"{similar_articles[list(similar_articles)[4]]['source'][1]}",\
-                                                cluster04_2_source=f"{similar_articles[list(similar_articles)[4]]['source'][2]}",\
-                                                cluster05_0_source=f"{similar_articles[list(similar_articles)[5]]['source'][0]}",\
-                                                cluster05_1_source=f"{similar_articles[list(similar_articles)[5]]['source'][1]}",\
-                                                cluster05_2_source=f"{similar_articles[list(similar_articles)[5]]['source'][2]}",\
-                                                cluster00_0_url=f"{similar_articles[list(similar_articles)[0]]['url'][0]}",\
-                                                cluster00_1_url=f"{similar_articles[list(similar_articles)[0]]['url'][1]}",\
-                                                cluster00_2_url=f"{similar_articles[list(similar_articles)[0]]['url'][2]}",\
-                                                cluster01_0_url=f"{similar_articles[list(similar_articles)[1]]['url'][0]}",\
-                                                cluster01_1_url=f"{similar_articles[list(similar_articles)[1]]['url'][1]}",\
-                                                cluster01_2_url=f"{similar_articles[list(similar_articles)[1]]['url'][2]}",\
-                                                cluster02_0_url=f"{similar_articles[list(similar_articles)[2]]['url'][0]}",\
-                                                cluster02_1_url=f"{similar_articles[list(similar_articles)[2]]['url'][1]}",\
-                                                cluster02_2_url=f"{similar_articles[list(similar_articles)[2]]['url'][2]}",\
-                                                cluster03_0_url=f"{similar_articles[list(similar_articles)[3]]['url'][0]}",\
-                                                cluster03_1_url=f"{similar_articles[list(similar_articles)[3]]['url'][1]}",\
-                                                cluster03_2_url=f"{similar_articles[list(similar_articles)[3]]['url'][2]}",\
-                                                cluster04_0_url=f"{similar_articles[list(similar_articles)[4]]['url'][0]}",\
-                                                cluster04_1_url=f"{similar_articles[list(similar_articles)[4]]['url'][1]}",\
-                                                cluster04_2_url=f"{similar_articles[list(similar_articles)[4]]['url'][2]}",\
-                                                cluster05_0_url=f"{similar_articles[list(similar_articles)[5]]['url'][0]}",\
-                                                cluster05_1_url=f"{similar_articles[list(similar_articles)[5]]['url'][1]}",\
-                                                cluster05_2_url=f"{similar_articles[list(similar_articles)[5]]['url'][2]}",\
-                                                )
+                rendered = flask.render_template(template,
+                                                news_name=news_name,
+                                                news_date=news_date,
+                                                clusters=template_clusters)
             output = open(output_filename, 'w', encoding="utf-8")
             output.write(rendered)
             output.close()
