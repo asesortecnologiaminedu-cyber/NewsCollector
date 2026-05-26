@@ -1,381 +1,438 @@
-import json
-import pandas as pd
-from datetime import *
-from gensim.parsing.preprocessing import remove_stopwords
-from nltk.stem.snowball import SnowballStemmer
-from nltk.tokenize import word_tokenize
-import string
-import feedparser as fp
-import dateutil
-import newspaper
-from unidecode import unidecode
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.cluster import AgglomerativeClustering
-import numpy as np
-import flask
-import warnings
-import random
+from __future__ import annotations
+
 import argparse
+import warnings
 import webbrowser
-import os
-import importlib.resources
+from datetime import date, datetime
+from typing import Any
+
+if __package__:
+    from .configuration import (
+        load_sources,
+        validate_bool_parameter,
+        validate_date,
+        validate_output_filename,
+        validate_template,
+    )
+    from .logging_utils import (
+        log_info,
+        log_warn,
+        print_scrape_result,
+        print_scrape_status,
+    )
+    from .processing import (
+        clean_articles,
+        clean_dataframe,
+        compute_tfidf,
+        find_clusters,
+        find_featured_clusters,
+        prettify_similar,
+        shuffle_content,
+        write_dataframe,
+    )
+    from .post_processing import run_post_processing
+    from .rendering import build_html
+    from .scraping import scrape_sources
+else:
+    from configuration import (  # type: ignore[no-redef]
+        load_sources,
+        validate_bool_parameter,
+        validate_date,
+        validate_output_filename,
+        validate_template,
+    )
+    from logging_utils import (  # type: ignore[no-redef]
+        log_info,
+        log_warn,
+        print_scrape_result,
+        print_scrape_status,
+    )
+    from processing import (  # type: ignore[no-redef]
+        clean_articles,
+        clean_dataframe,
+        compute_tfidf,
+        find_clusters,
+        find_featured_clusters,
+        prettify_similar,
+        shuffle_content,
+        write_dataframe,
+    )
+    from post_processing import run_post_processing  # type: ignore[no-redef]
+    from rendering import build_html  # type: ignore[no-redef]
+    from scraping import scrape_sources  # type: ignore[no-redef]
+
 warnings.filterwarnings("ignore")
 
-class NewsCollector:
 
-    def __init__(self, sources="sources.json", news_name="Daily News Update", news_date=date.today(), template='newsletter.html', output_filename='default', auto_open=False, return_details=False):
+class NewsCollector:
+    def __init__(
+        self,
+        sources: str = "sources.json",
+        news_name: str = "Actualización diaria de noticias",
+        news_date: date | str | None = None,
+        template: str = "newsletter.html",
+        output_filename: str = "default",
+        auto_open: bool = False,
+        return_details: bool = False,
+        ai_post_processing: bool = True,
+        ai_post_processing_prompts_file: str | None = None,
+    ) -> None:
+        resolved_news_date = date.today() if news_date is None else news_date
+
         self.sources = Helper.load_sources(sources)
-        self.news_name = news_name  
-        self.news_date, self.day_before = Helper.validate_date(news_date)
+        self.news_name = news_name
+        self.news_date, self.day_before = Helper.validate_date(resolved_news_date)
         self.template, self.template_path = Helper.validate_template(template)
-        self.output_filename = Helper.validate_output_filename(output_filename, news_date)
+        self.output_filename = Helper.validate_output_filename(output_filename, self.news_date)
         self.return_details = Helper.validate_return_details(return_details)
         self.auto_open = Helper.validate_auto_open(auto_open)
+        self.ai_post_processing = Helper.validate_ai_post_processing(ai_post_processing)
+        self.ai_post_processing_prompts_file = Helper.validate_ai_post_processing_prompts_file(
+            ai_post_processing_prompts_file
+        )
 
-    def create(self):
+    def create(self) -> str | tuple[str, dict[int, list[Any]], dict[int, list[Any]]]:
         try:
+            log_info(f"Starting newsletter creation for date {self.news_date}.")
             start = datetime.now()
-            scraper = Scraper(self.sources, news_date=self.news_date)
-            self.sources = scraper.scrape()
 
-            news_df = Helper.write_dataframe(self.sources)
+            scraper = Scraper(self.sources, news_date=self.news_date)
+            scraped_articles = scraper.scrape()
+
+            news_df = Helper.write_dataframe(scraped_articles)
             end = datetime.now()
             Helper.print_scrape_result(news_df, start, end)
 
             news_df = Helper.clean_dataframe(news_df)
             news_df = Helper.clean_articles(news_df)
 
-            tfidf_df = Processer.compute_tfidf(news_df)
-            clusters = Processer.find_clusters(news_df, tfidf_df)
+            tfidf_matrix, cleaned_df = Processer.compute_tfidf(news_df)
+            clusters = Processer.find_clusters(cleaned_df, tfidf_matrix)
             featured_clusters = Processer.find_featured_clusters(clusters)
 
-            Processer.build_html(featured_clusters, self.news_name, self.news_date, self.template, self.output_filename, self.template_path)
-            msg = f"NewsCollector completed successfully. View the output here: {self.output_filename}"
-            print(msg)
+            if not featured_clusters:
+                log_warn("No article clusters were generated. Output may be empty.")
+            else:
+                cluster_sizes = [len(featured_clusters[index]) for index in featured_clusters]
+                log_info(
+                    f"Generated {len(featured_clusters)} clusters with sizes: {cluster_sizes}"
+                )
+
+            featured_clusters = run_post_processing(
+                clusters=featured_clusters,
+                news_name=self.news_name,
+                news_date=self.news_date,
+                enable_ai_post_processing=self.ai_post_processing,
+                ai_prompts_file=self.ai_post_processing_prompts_file,
+            )
+
+            Processer.build_html(
+                featured_clusters,
+                self.news_name,
+                self.news_date,
+                self.template,
+                self.output_filename,
+                self.template_path,
+            )
+            print(
+                "NewsCollector completed successfully. "
+                f"View the output here: {self.output_filename}"
+            )
+
             if self.auto_open:
                 webbrowser.open(self.output_filename)
+
             if self.return_details:
                 return self.output_filename, clusters, featured_clusters
+
             return self.output_filename
-        except:
-            raise Exception(f'Error in "Newsletter.create()"')
+        except Exception as exc:
+            raise RuntimeError('Error in "Newsletter.create()"') from exc
+
 
 class Scraper:
-
-    def __init__(self, sources, news_date):
+    def __init__(self, sources: dict[str, dict[str, Any]], news_date: date) -> None:
         self.sources = sources
         self.news_date = news_date
 
-    def scrape(self):
-        # Function that scrapes the content from the URLs in the source data
+    def scrape(self) -> list[dict[str, Any]]:
         try:
-            articles_list = []
-            for source, content in self.sources.items():
-                for url in content['rss']:
-                    d = fp.parse(url)
-                    for entry in d.entries:
-                        article = {}
-                        if hasattr(entry,'published'):
-                            article_date = dateutil.parser.parse(getattr(entry,'published'))
-                            if (article_date.strftime('%Y-%m-%d') == str(self.news_date)):
-                                try:
-                                    content = newspaper.Article(entry.link)
-                                    content.download()
-                                    content.parse()  
-                                    content.nlp()
-                                    try:
-                                        article['source'] = source
-                                        article['url'] = entry.link
-                                        article['date'] = article_date.strftime('%Y-%m-%d')
-                                        article['time'] = article_date.strftime('%H:%M:%S %Z') # hour, minute, timezone (converted)
-                                        article['title'] = content.title
-                                        article['body'] = content.text
-                                        article['summary'] = content.summary
-                                        article['keywords'] = content.keywords
-                                        article['image_url'] = content.top_image
-                                        articles_list.append(article)
-                                        Helper.print_scrape_status(len(articles_list))
-                                    except Exception as e:
-                                        print(e)
-                                        print('continuing...')
-                                except Exception as e: 
-                                    print(e)
-                                    print('continuing...')
-            return articles_list
-        except:
-            raise Exception(f'Error in "Scraper.scrape()"')
+            return scrape_sources(self.sources, self.news_date)
+        except Exception as exc:
+            raise RuntimeError('Error in "Scraper.scrape()"') from exc
+
 
 class Processer:
-
-    def compute_tfidf(df):
-        # Function that computes the TFIDF values for all words in the article bodies
+    @staticmethod
+    def compute_tfidf(df: Any) -> tuple[Any, Any]:
         try:
-            tfidf_df = TfidfVectorizer().fit_transform(df['clean_body']).toarray()
-            return tfidf_df
-        except:
-            raise Exception(f'Error in "Processer.compute_tfidf()"')
+            return compute_tfidf(df)
+        except Exception as exc:
+            raise RuntimeError('Error in "Processer.compute_tfidf()"') from exc
 
-    def find_clusters(df, tfidf_df, distance_threshhold=1):
+    @staticmethod
+    def find_clusters(df: Any, tfidf_df: Any, distance_threshhold: float = 1) -> dict[int, list[Any]]:
         try:
-            ac = AgglomerativeClustering(distance_threshold=distance_threshhold, n_clusters=None).fit(tfidf_df)
-            articles_labeled = ac.fit_predict(tfidf_df)
-            cluster_count = {}
-            for label in range(0, len(set(ac.labels_))):
-                cluster_count[label] = np.count_nonzero(articles_labeled == label)
-            clusters = {}
-            for n in range(0, len(cluster_count), 1):
-                indexes = np.argwhere(articles_labeled == max(cluster_count, key=cluster_count.get, default=None)).flatten('C').tolist()
-                if len(indexes) < 2:
-                    break
-                else:
-                    clusters[n] = []
-                    for i in indexes:
-                        clusters[n].append(df.iloc[i])
-                    cluster_count.pop(max(cluster_count, key=cluster_count.get, default=None))
-            return clusters
-        except:
-             raise Exception(f'Error in "Processer.find_clusters()"')
+            return find_clusters(
+                df=df,
+                tfidf_matrix=tfidf_df,
+                distance_threshold=distance_threshhold,
+            )
+        except Exception as exc:
+            raise RuntimeError('Error in "Processer.find_clusters()"') from exc
 
-    def find_featured_clusters(clusters):
+    @staticmethod
+    def find_featured_clusters(clusters: dict[int, list[Any]]) -> dict[int, list[Any]]:
         try:
-            return clusters
-        except:
-            raise Exception(f'Error in "Processer.find_featured_clusters()"')
+            return find_featured_clusters(clusters)
+        except Exception as exc:
+            raise RuntimeError('Error in "Processer.find_featured_clusters()"') from exc
 
-    def build_html(clusters_dict, news_name, news_date, template, output_filename, template_path):
+    @staticmethod
+    def build_html(
+        clusters_dict: dict[int, list[Any]],
+        news_name: str,
+        news_date: date,
+        template: str,
+        output_filename: str,
+        template_path: str,
+    ) -> bool:
         try:
-            newsletter = flask.Flask('newsletter', template_folder=template_path)
+            return build_html(
+                clusters_dict=clusters_dict,
+                news_name=news_name,
+                news_date=news_date,
+                template=template,
+                output_filename=output_filename,
+                template_path=template_path,
+            )
+        except Exception as exc:
+            raise RuntimeError('Error in "Processer.build_html()"') from exc
 
-            Helper.shuffle_content(clusters_dict)
-
-            template_clusters = []
-            for key in list(clusters_dict):
-                articles = clusters_dict[key]
-                if not articles:
-                    continue
-                main = articles[0]
-                cluster_data = {
-                    'source': main['source'],
-                    'url': main['url'],
-                    'pic': main['image_url'],
-                    'title': main['title'],
-                    'body': main['body'],
-                    'similar': []
-                }
-                for sim in articles[1:]:
-                    cluster_data['similar'].append({
-                        'source': sim['source'],
-                        'url': sim['url']
-                    })
-                template_clusters.append(cluster_data)
-
-            with newsletter.app_context():
-                rendered = flask.render_template(template,
-                                                news_name=news_name,
-                                                news_date=news_date,
-                                                clusters=template_clusters)
-            output = open(output_filename, 'w', encoding="utf-8")
-            output.write(rendered)
-            output.close()
-            return True
-        except:
-            raise Exception(f'Error in "Processer.build_html()"')
 
 class Helper:
+    @staticmethod
+    def log_info(message: str) -> None:
+        log_info(message)
 
-    def validate_date(date):
+    @staticmethod
+    def log_warn(message: str) -> None:
+        log_warn(message)
+
+    @staticmethod
+    def validate_date(news_date: date | str) -> tuple[date, date]:
         try:
-            if isinstance(date, str):
-                date = datetime.strptime(date, '%Y-%m-%d').date()
-            day_before = date - timedelta(days=1)
-            return date, day_before
-        except:
-            raise Exception(f'Error in "Helper.validate_date()"')
+            return validate_date(news_date)
+        except Exception as exc:
+            raise RuntimeError('Error in "Helper.validate_date()"') from exc
 
-    def validate_template(template):
+    @staticmethod
+    def validate_template(template: str) -> tuple[str, str]:
         try:
-            if os.path.exists(os.path.join('templates', template)):
-                template_path = 'templates'
-                print(f'INFO: Using custom "{template}" as template file.')
-                return template, template_path
-            else:
-                template = 'newsletter.html'
-                # Get the package directory
-                package_dir = os.path.dirname(os.path.abspath(__file__))
-                template_path = os.path.join(package_dir, 'templates')
-                print('INFO: Using package default "newsletter.html" as template file.')
-                return template, template_path
-        except:
-            raise Exception(f'Error in "Helper.validate_template()"') 
+            return validate_template(template)
+        except Exception as exc:
+            raise RuntimeError('Error in "Helper.validate_template()"') from exc
 
-    def load_sources(file):
-        # Function that loads in the sources from the JSON database
+    @staticmethod
+    def load_sources(file_name: str) -> dict[str, Any]:
         try:
-            with open(file) as data:
-                sources = json.load(data)
-            print(f'INFO: Using custom "{file}" as source file.')
-            return sources
-        except:
-            try:
-                # Get the package directory
-                package_dir = os.path.dirname(os.path.abspath(__file__))
-                default_file = os.path.join(package_dir, 'sources.json')
-                with open(default_file) as data:
-                    sources = json.load(data)
-                    print('INFO: Using package default "sources.json" as source file.')
-                    return sources
-            except:
-                raise Exception(f'Error in "Helper.load_sources()"')
+            return load_sources(file_name)
+        except Exception as exc:
+            raise RuntimeError('Error in "Helper.load_sources()"') from exc
 
-    def validate_output_filename(file, news_date):
+    @staticmethod
+    def validate_output_filename(file_name: str, news_date: date) -> str:
         try:
-            if file == 'default':
-                # Get the package directory
-                package_dir = os.path.dirname(os.path.abspath(__file__))
-                output_path = os.path.join(package_dir, 'rendered')
-                if not os.path.isdir(output_path):
-                    os.makedirs(output_path)
-                file = os.path.join(output_path, f'newsletter_{news_date}.html')
-                return file
-            else:
-                head_tail = os.path.split(file)
-                if head_tail[0] != '':
-                    if not os.path.exists(head_tail[0]):
-                        os.makedirs(head_tail[0])
-                return file
-        except:
-            raise Exception(f'Error in "Helper.validate_output_filename()"')
-        
-    def validate_return_details(return_details):
-        if not isinstance(return_details, bool):
-            raise Exception(f'Error in "validate_return_details": parameter "return_details" must be of type "bool".')
-        return return_details
+            return validate_output_filename(file_name, news_date)
+        except Exception as exc:
+            raise RuntimeError('Error in "Helper.validate_output_filename()"') from exc
 
-    def validate_auto_open(auto_open):
-        if not isinstance(auto_open, bool):
-            raise Exception(f'Error in "validate_auto_open": parameter "auto_open" must be of type "bool".')
-        return auto_open
+    @staticmethod
+    def validate_return_details(return_details: bool) -> bool:
+        return validate_bool_parameter(return_details, "return_details")
 
-    def print_scrape_status(count):
-        print(f"Scraped {count} articles", end="\r")
+    @staticmethod
+    def validate_auto_open(auto_open: bool) -> bool:
+        return validate_bool_parameter(auto_open, "auto_open")
 
-    def print_scrape_result(df, start, end):
-        time_delta = end - start
-        min, sec = divmod(time_delta.days * 86400 + time_delta.seconds, 60)
-        for source in set(df["source"]):
-            print(f'{list(df["source"]).count(source)} articles downloaded from {source}\n', end="\r")
-        print(f'{len(df["source"])} total articles downloaded in {min} min {sec} sec\n')        
+    @staticmethod
+    def validate_ai_post_processing(ai_post_processing: bool) -> bool:
+        return validate_bool_parameter(ai_post_processing, "ai_post_processing")
 
-    def write_dataframe(sources):
-        # Function that writes the
+    @staticmethod
+    def validate_ai_post_processing_prompts_file(
+        ai_post_processing_prompts_file: str | None,
+    ) -> str | None:
+        if ai_post_processing_prompts_file is None:
+            return None
+
+        if not isinstance(ai_post_processing_prompts_file, str):
+            raise TypeError('Parameter "ai_post_processing_prompts_file" must be a string or None.')
+
+        normalized_value = ai_post_processing_prompts_file.strip()
+        if not normalized_value:
+            return None
+
+        return normalized_value
+
+    @staticmethod
+    def print_scrape_status(count: int) -> None:
+        print_scrape_status(count)
+
+    @staticmethod
+    def print_scrape_result(df: Any, start: datetime, end: datetime) -> None:
+        print_scrape_result(df, start, end)
+
+    @staticmethod
+    def write_dataframe(sources: list[dict[str, Any]]) -> Any:
         try:
-            df = pd.json_normalize(sources)
-            return df
-        except:
-            raise Exception(f'Error in "Helper.write_dataframe()"')
+            return write_dataframe(sources)
+        except Exception as exc:
+            raise RuntimeError('Error in "Helper.write_dataframe()"') from exc
 
-    def clean_dataframe(df):
+    @staticmethod
+    def clean_dataframe(df: Any) -> Any:
         try:
-            df = df[df.title != '']
-            df = df[df.body != '']
-            df = df[df.image_url != '']
+            return clean_dataframe(df)
+        except Exception as exc:
+            raise RuntimeError('Error in "Helper.clean_dataframe()"') from exc
 
-            df = df[df.title.str.count(r'\s+').ge(3)]
-            df = df[df.body.str.count(r'\s+').ge(20)]
-
-            return df
-        except:
-            raise Exception(f'Error in "Helper.clean_dataframe()"')
-        
-    def clean_articles(df):
-        # Function that cleans all the bodies of the articles
+    @staticmethod
+    def clean_articles(df: Any) -> Any:
         try:
-            # Drop Duplicates
-            df = (df.drop_duplicates(subset=["title", "source"])).sort_index()
-            df = (df.drop_duplicates(subset=["body"])).sort_index()
-            df = (df.drop_duplicates(subset=["url"])).sort_index()
-            df = df.reset_index(drop=True)
-            
-            # Make all letters lower case
-            df['clean_body'] = df['body'].str.lower()
+            return clean_articles(df)
+        except Exception as exc:
+            raise RuntimeError('Error in "Helper.clean_articles()"') from exc
 
-            # Filter out the stopwords, puntuation and digits
-            df['clean_body'] = [remove_stopwords(x)\
-                                .translate(str.maketrans('','',string.punctuation))\
-                                .translate(str.maketrans('','',string.digits))\
-                                for x in df['clean_body']]
-
-            # Remove sources
-            sources_set = [x.lower() for x in set(df['source'])]
-            sources_to_replace = dict.fromkeys(sources_set, "")
-            df['clean_body'] = (df['clean_body'].replace(sources_to_replace, regex=True))
-
-            # Unidecode all characters
-            df['clean_body'] = df['clean_body'].apply(unidecode)
-
-            # Tokenize
-            df['clean_body'] = df['clean_body'].apply(word_tokenize)
-
-            # Stem words
-            stemmer = SnowballStemmer(language='english')
-            df['clean_body'] = df["clean_body"].apply(lambda x: [stemmer.stem(y) for y in x])
-            df['clean_body'] = df["clean_body"].apply(lambda x: ' '.join([word for word in x]))
-
-            return df
-        except:
-            raise Exception(f'Error in "Helper.clean_articles()"')
-    
-    def shuffle_content(clusters_dict):
+    @staticmethod
+    def shuffle_content(clusters_dict: dict[int, list[Any]]) -> None:
         try:
-            for i in list(clusters_dict):
-                try:
-                    random.shuffle(clusters_dict[i])
-                except:
-                    pass
-        except:
-            raise Exception(f'Error in "Helper.shuffle_content()"')
+            shuffle_content(clusters_dict)
+        except Exception as exc:
+            raise RuntimeError('Error in "Helper.shuffle_content()"') from exc
 
-    def prettify_similar(clusters_dict):
+    @staticmethod
+    def prettify_similar(clusters_dict: dict[int, list[Any]]) -> dict[int, dict[str, list[str]]]:
         try:
-            similar_articles = {}
-            for i in list(clusters_dict):
-                similar_articles[i] = {}
-                if len(clusters_dict[i]) >= 4: 
-                    similar_articles[i]['source'] = [f"{clusters_dict[i][1]['source']} ", f"| {clusters_dict[i][2]['source']} ", f"| {clusters_dict[i][3]['source']}"]
-                    similar_articles[i]['url'] = [clusters_dict[i][1]['url'], clusters_dict[i][2]['url'], clusters_dict[i][3]['url']]
-                elif len(clusters_dict[i]) == 3:
-                    similar_articles[i]['source'] = [f"{clusters_dict[i][1]['source']} ", f"| {clusters_dict[i][2]['source']}", ""]
-                    similar_articles[i]['url'] = [clusters_dict[i][1]['url'], clusters_dict[i][2]['url'], ""]
-                elif len(clusters_dict[i]) == 2: 
-                    similar_articles[i]['source'] = [clusters_dict[i][1]['source'], "", ""]
-                    similar_articles[i]['url'] = [clusters_dict[i][1]['url'], "", ""]
-                else:
-                    similar_articles[i]['source'] = ["None", "", ""]
-                    similar_articles[i]['url'] = ["", "", ""]
-            return similar_articles
-        except:
-            raise Exception(f'Error in "Helper.prettify_similar()"')
+            return prettify_similar(clusters_dict)
+        except Exception as exc:
+            raise RuntimeError('Error in "Helper.prettify_similar()"') from exc
+
+
+def _parse_bool(value: str | bool) -> bool:
+    if isinstance(value, bool):
+        return value
+
+    normalized = value.strip().lower()
+    truthy_values = {"1", "true", "t", "yes", "y", "on"}
+    falsy_values = {"0", "false", "f", "no", "n", "off"}
+
+    if normalized in truthy_values:
+        return True
+    if normalized in falsy_values:
+        return False
+
+    raise argparse.ArgumentTypeError(f'Expected a boolean value, got "{value}".')
+
+
+def _build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Automated News Article Collection with Python"
+    )
+    parser.add_argument(
+        "-s",
+        "--sources",
+        type=str,
+        required=False,
+        default="sources.json",
+        help="Path of source JSON file with news sources to be scraped.",
+    )
+    parser.add_argument(
+        "-n",
+        "--news_name",
+        type=str,
+        required=False,
+        default="Actualización diaria de noticias",
+        help="Title name of the newsletter.",
+    )
+    parser.add_argument(
+        "-d",
+        "--news_date",
+        type=str,
+        required=False,
+        default=str(date.today()),
+        help="Date of the newsletter in YYYY-MM-DD format.",
+    )
+    parser.add_argument(
+        "-t",
+        "--template",
+        type=str,
+        required=False,
+        default="newsletter.html",
+        help="Filename of the template HTML newsletter file.",
+    )
+    parser.add_argument(
+        "-o",
+        "--output_filename",
+        type=str,
+        required=False,
+        default="default",
+        help="Filename of the output HTML newsletter file.",
+    )
+    parser.add_argument(
+        "-r",
+        "--return_details",
+        type=_parse_bool,
+        required=False,
+        default=False,
+        help="Choose whether to return the collected cluster data.",
+    )
+    parser.add_argument(
+        "-a",
+        "--auto_open",
+        type=_parse_bool,
+        required=False,
+        default=False,
+        help="Choose whether to automatically open the newsletter in the browser.",
+    )
+    parser.add_argument(
+        "--ai_post_processing",
+        type=_parse_bool,
+        required=False,
+        default=True,
+        help="Choose whether to apply AI post-processing with OpenRouter.",
+    )
+    parser.add_argument(
+        "--ai_post_processing_prompts_file",
+        type=str,
+        required=False,
+        default=None,
+        help=(
+            "Optional path to AI post-processing prompt config JSON file. "
+            "Defaults to newscollector/post_processing/ai_post_processing/prompts.json"
+        ),
+    )
+    return parser
+
+
+def main() -> None:
+    args = _build_parser().parse_args()
+    newsletter = NewsCollector(
+        sources=args.sources,
+        news_name=args.news_name,
+        news_date=args.news_date,
+        template=args.template,
+        output_filename=args.output_filename,
+        auto_open=args.auto_open,
+        return_details=args.return_details,
+        ai_post_processing=args.ai_post_processing,
+        ai_post_processing_prompts_file=args.ai_post_processing_prompts_file,
+    )
+    newsletter.create()
+
 
 if __name__ == "__main__":
+    main()
 
-    parser = argparse.ArgumentParser(description='Automated News Article Collection with Python - https://github.com/elisemercury/Duplicate-Image-Finder')
-    parser.add_argument("-s", "--sources", type=str, help='Path of source JSON file with news sources to be scraped.', required=False, default="sources.json")
-    parser.add_argument("-n", "--news_name", type=str, help='Title name of the newsletter.', required=False, default='Daily News Update')
-    parser.add_argument("-d", "--news_date", type=str, help='Date of the newsletter.', required=False, default=date.today())
-    parser.add_argument("-t", "--template", type=str, help='Filename of the template HTML newsletter file.', required=False, default='newsletter.html')
-    parser.add_argument("-o", "--output_filename", type=str, help='Filename of the output HTML newsletter file.', required=False, default='default')
-    parser.add_argument("-r", "--return_details", type=bool, help='Choose whether to return the collected cluster data.', required=False, default=False)   
-    parser.add_argument("-a", "--auto_open", type=bool, help='Choose whether to automatically open the newsletter in the browser.', required=False, default=False)   
-    args = parser.parse_args()
 
-    sources = args.sources
-    news_name = args.news_name
-    news_date = args.news_date
-    template = args.template
-    output_filename = args.output_filename
-    return_details = args.return_details
-    auto_open = args.auto_open
-
-    newsletter = NewsCollector(sources, news_name, news_date, template, output_filename, return_details, auto_open)
-    newsletter.create()
-    
+__all__ = ["NewsCollector", "Scraper", "Processer", "Helper", "main"]

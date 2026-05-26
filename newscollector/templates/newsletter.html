@@ -1,47 +1,231 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <link rel="icon" href="../static/assets/logo.png">
-    <title>{{news_name}}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bitter&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="../static/css/newsletter.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ news_name }}</title>
+    <link rel="icon" href="{{ logo_path if logo_path is defined else '../static/assets/logo.png' }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,600;6..72,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ["Manrope", "ui-sans-serif", "sans-serif"],
+                        serif: ["Newsreader", "ui-serif", "serif"],
+                    },
+                },
+            },
+        };
+    </script>
 </head>
+<body class="min-h-screen bg-slate-100 text-slate-900 antialiased">
+    <div class="fixed inset-0 -z-10 overflow-hidden">
+        <div class="absolute -left-20 top-10 h-80 w-80 rounded-full bg-cyan-200/50 blur-3xl"></div>
+        <div class="absolute right-0 top-32 h-96 w-96 rounded-full bg-amber-200/50 blur-3xl"></div>
+    </div>
 
-<body>
-    <header>
-        <img src="../static/assets/logo.png" alt="Newspaper Logo" class="logo">
-        <h1 class="title">{{news_name}}</h1>
-        <p class="date">{{news_date}}</p>
-    </header>
-    <main>
-        <div class="flex-container">
-            {% for cluster in clusters %}
-            <div class="card">
-                <a href="{{cluster.url}}"><img src="{{cluster.pic}}" alt="Article Image"></a>
-                <div class="card-body">
-                    <p class="article-source">{{cluster.source}}</p>
-                    <h2 class="article-title"><a href="{{cluster.url}}"></a>{{cluster.title}}</h2>
-                    <p class="article-body">{{cluster.body}}</p>
-                    {% if cluster.similar %}
-                    <p class="article-similar">Similar articles: 
-                        {% for sim in cluster.similar %}
-                        <a class="article-similar-body" href="{{sim.url}}">{{sim.source}}</a>
-                        {% endfor %}
-                    </p>
-                    {% endif %}
+    <header class="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 backdrop-blur-sm">
+        <div class="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-5 sm:px-6 lg:px-8">
+            <div class="flex min-w-0 items-center gap-3">
+                <img src="{{ logo_path if logo_path is defined else '../static/assets/logo.png' }}" alt="Logo de NewsCollector" class="h-11 w-11 rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
+                <div class="min-w-0">
+                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">Resumen diario</p>
+                    <h1 class="truncate font-serif text-2xl leading-none text-slate-900 sm:text-3xl">{{ news_name }}</h1>
                 </div>
             </div>
-            {% endfor %}
+            <p class="shrink-0 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">{{ news_date }}</p>
         </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <section class="mb-8 flex items-start justify-between gap-4">
+            <div>
+                <h2 class="font-serif text-3xl text-slate-900 sm:text-4xl">Titulares principales</h2>
+                <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Haz clic en un titular para expandirlo, leer el resumen completo y abrir la fuente original.</p>
+            </div>
+            <button
+                id="layout-toggle"
+                type="button"
+                onclick="toggleLayout()"
+                aria-label="Cambiar a vista de cuadrícula de 2 columnas"
+                aria-pressed="false"
+                class="inline-flex shrink-0 items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-700 shadow-sm transition hover:border-cyan-400 hover:text-cyan-700"
+            >
+                <svg id="layout-icon-list" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-4 w-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 7h14M5 12h14M5 17h14" />
+                </svg>
+                <svg id="layout-icon-grid" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="hidden h-4 w-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" />
+                </svg>
+                <span id="layout-toggle-text">Cuadrícula</span>
+            </button>
+        </section>
+
+        <section id="stories-container" class="overflow-hidden rounded-2xl border border-slate-200/80 bg-white/90 shadow-sm ring-1 ring-slate-100/70 divide-y divide-slate-200/80">
+            {% for cluster in clusters %}
+            <article class="news-item p-4 transition-colors duration-200 hover:bg-slate-50/70 sm:p-6">
+                <div class="news-item-main flex items-start gap-4">
+                    {% if cluster.pic %}
+                    <a href="{{ cluster.url }}" target="_blank" rel="noopener noreferrer" class="news-thumb hidden h-20 w-32 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 sm:block">
+                        <img src="{{ cluster.pic }}" alt="Image for {{ cluster.title }}" class="h-full w-full object-cover transition duration-500 hover:scale-105">
+                    </a>
+                    {% endif %}
+
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center justify-between gap-3">
+                            <p class="truncate text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{{ cluster.source }}</p>
+                            <div class="flex items-center gap-2">
+                                {% if cluster.date %}
+                                <p class="hidden text-xs font-medium text-slate-400 sm:block">{{ cluster.date }}</p>
+                                {% endif %}
+                                <p class="text-xs font-semibold text-slate-400">#{{ loop.index }}</p>
+                            </div>
+                        </div>
+
+                        <h3 class="mt-2 text-lg font-semibold leading-7 text-slate-900 sm:text-xl">
+                            <button
+                                id="card-heading-{{ loop.index0 }}"
+                                type="button"
+                                onclick="toggleCard({{ loop.index0 }})"
+                                aria-expanded="false"
+                                class="flex w-full items-start justify-between gap-4 text-left transition hover:text-cyan-700"
+                            >
+                                <span>{{ cluster.title }}</span>
+                                <span id="card-icon-{{ loop.index0 }}" class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-slate-300 text-lg leading-none text-slate-500">+</span>
+                            </button>
+                        </h3>
+
+                        {% if cluster.body %}
+                        <p class="mt-2 text-sm leading-6 text-slate-600">
+                            {{ cluster.body[:175] }}{% if cluster.body|length > 175 %}...{% endif %}
+                        </p>
+                        {% endif %}
+
+                        <div id="card-body-{{ loop.index0 }}" class="mt-4 hidden rounded-xl border border-slate-100 bg-white p-4">
+                            <p class="text-sm leading-7 text-slate-700 whitespace-pre-line">{{ cluster.body }}</p>
+                            <div class="mt-4 flex flex-wrap items-center gap-3">
+                                <a href="{{ cluster.url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white transition hover:bg-slate-700">Leer original</a>
+                                {% if cluster.similar %}
+                                <p class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Cobertura similar:</p>
+                                {% for sim in cluster.similar %}
+                                <a href="{{ sim.url }}" target="_blank" rel="noopener noreferrer" class="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-cyan-400 hover:text-cyan-700">{{ sim.source }}</a>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </section>
     </main>
-    <footer>
-        <div class="footer-container">
-            <span> This newsletter was auto-generated by <a href="https://github.com/elisemercury/NewsCollector">NewsCollector</a></span>
-            <span>View the NewsCollector project on <a href="https://github.com/elisemercury/NewsCollector">GitHub</a></span>
+
+    <footer class="border-t border-slate-200 bg-white/70 py-6">
+        <div class="mx-auto flex w-full max-w-7xl flex-col gap-1 px-4 text-sm text-slate-600 sm:px-6 lg:px-8">
+            <span>Este boletín fue generado automáticamente por <a href="https://github.com/elisemercury/NewsCollector" class="font-semibold text-slate-900 underline decoration-slate-300 underline-offset-4">NewsCollector</a>.</span>
+            <span>Consulta el proyecto en <a href="https://github.com/elisemercury/NewsCollector" class="font-semibold text-slate-900 underline decoration-slate-300 underline-offset-4">GitHub</a>.</span>
         </div>
     </footer>
 
-</body>
+    <script>
+        var currentLayout = "list";
 
+        function applyLayout(mode) {
+            var container = document.getElementById("stories-container");
+            var button = document.getElementById("layout-toggle");
+            var buttonText = document.getElementById("layout-toggle-text");
+            var listIcon = document.getElementById("layout-icon-list");
+            var gridIcon = document.getElementById("layout-icon-grid");
+            var items = document.querySelectorAll(".news-item");
+            var itemMain = document.querySelectorAll(".news-item-main");
+            var thumbs = document.querySelectorAll(".news-thumb");
+
+            if (!container || !button || !buttonText || !listIcon || !gridIcon) {
+                return;
+            }
+
+            var isGrid = mode === "grid";
+            currentLayout = isGrid ? "grid" : "list";
+
+            if (isGrid) {
+                container.className = "grid grid-cols-2 gap-6";
+                button.setAttribute("aria-label", "Cambiar a vista de lista");
+                button.setAttribute("aria-pressed", "true");
+                buttonText.textContent = "Lista";
+                listIcon.classList.add("hidden");
+                gridIcon.classList.remove("hidden");
+            } else {
+                container.className = "overflow-hidden rounded-2xl border border-slate-200/80 bg-white/90 shadow-sm ring-1 ring-slate-100/70 divide-y divide-slate-200/80";
+                button.setAttribute("aria-label", "Cambiar a vista de cuadrícula de 2 columnas");
+                button.setAttribute("aria-pressed", "false");
+                buttonText.textContent = "Cuadrícula";
+                listIcon.classList.remove("hidden");
+                gridIcon.classList.add("hidden");
+            }
+
+            items.forEach(function (item) {
+                if (isGrid) {
+                    item.className = "news-item rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm ring-1 ring-slate-100/70 transition duration-300 hover:-translate-y-0.5 hover:shadow-lg sm:p-6";
+                } else {
+                    item.className = "news-item p-4 transition-colors duration-200 hover:bg-slate-50/70 sm:p-6";
+                }
+            });
+
+            itemMain.forEach(function (main) {
+                if (isGrid) {
+                    main.className = "news-item-main flex flex-col gap-4";
+                } else {
+                    main.className = "news-item-main flex items-start gap-4";
+                }
+            });
+
+            thumbs.forEach(function (thumb) {
+                if (isGrid) {
+                    thumb.className = "news-thumb block aspect-[16/9] w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-100";
+                } else {
+                    thumb.className = "news-thumb hidden h-20 w-32 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 sm:block";
+                }
+            });
+
+            try {
+                localStorage.setItem("newscollectorLayout", currentLayout);
+            } catch (err) {
+                return;
+            }
+        }
+
+        function toggleLayout() {
+            applyLayout(currentLayout === "list" ? "grid" : "list");
+        }
+
+        function toggleCard(index) {
+            var content = document.getElementById("card-body-" + index);
+            var heading = document.getElementById("card-heading-" + index);
+            var icon = document.getElementById("card-icon-" + index);
+
+            if (!content || !heading || !icon) {
+                return;
+            }
+
+            var isOpening = content.classList.contains("hidden");
+            content.classList.toggle("hidden");
+            heading.setAttribute("aria-expanded", isOpening ? "true" : "false");
+            icon.textContent = isOpening ? "-" : "+";
+        }
+
+        (function initializeLayout() {
+            var preferredLayout = "list";
+            try {
+                preferredLayout = localStorage.getItem("newscollectorLayout") || "list";
+            } catch (err) {
+                preferredLayout = "list";
+            }
+            applyLayout(preferredLayout === "grid" ? "grid" : "list");
+        })();
+    </script>
+</body>
 </html>

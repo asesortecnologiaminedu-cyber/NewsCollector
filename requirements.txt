@@ -17,6 +17,7 @@ jieba3k>=0.35
 Jinja2>=3.1
 joblib>=1.2
 lxml>=4.9
+lxml_html_clean>=0.4
 MarkupSafe>=2.1
 newspaper3k>=0.2.8
 nltk>=3.8
