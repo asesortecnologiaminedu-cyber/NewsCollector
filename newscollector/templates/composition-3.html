@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de Control</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans antialiased dark:bg-gray-950 dark:text-gray-100 transition-colors duration-200">
+    <div class="mx-auto max-w-7xl p-6">
+        <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">Centro de Control</h3>
+        <p class="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400">
+            Analisis de la situacion actual y análisis de las noticias más relevantes.
+        </p>
+
+        <div class="mt-6 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex gap-4">
+                <button class="border-b-2 border-blue-600 pb-2 text-sm font-medium text-blue-600 dark:border-blue-400 dark:text-blue-400">Resumen</button>
+                <button class="pb-2 text-sm font-medium text-gray-500 dark:text-gray-400">Noticias</button>
+            </div>
+        </div>
+
+        <div class="mt-10 grid max-w-7xl grid-cols-1 gap-8 md:grid-cols-3">
+            <div class="rounded-xl border border-gray-200 bg-white p-6 shadw-xs dark:border-gray-700 dark:bg-gray-900 md:col-span-2">
+                <h4 class="text-sm text-gray-500 dark:text-gray-400">Riesgo Mie 27 de Mayo 2026 09:50</h4>
+                <p class="mt-1 text-3xl font-semibold text-gray-900 dark:text-gray-100">R 0.91</p>
+
+                <div class="mt-6 flex h-3 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                    <div class="bg-blue-500" style="width: 73%"></div>
+                    <div class="bg-cyan-500" style="width: 22%"></div>
+                    <div class="bg-fuchsia-500" style="width: 5%"></div>
+                </div>
+
+                <ul class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <li class="flex items-center gap-2">
+                        <span class="inline-block size-3 shrink-0 rounded-sm bg-blue-500"></span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400"><span class="font-medium text-gray-700 dark:text-gray-300">48</span> riesgo bajo</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="inline-block size-3 shrink-0 rounded-sm bg-cyan-500"></span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400"><span class="font-medium text-gray-700 dark:text-gray-300">10</span> riesgo medio</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="inline-block size-3 shrink-0 rounded-sm bg-fuchsia-500"></span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400"><span class="font-medium text-gray-700 dark:text-gray-300">2</span> riesgo alto</span>
+                    </li>
+                </ul>
+
+                <hr class="my-6 border-gray-200 dark:border-gray-700" />
+
+                <p class="mt-6 text-sm font-medium text-gray-900 dark:text-gray-100">Noticia con mayor revelancia y riesgo</p>
+                <div class="mt-4 rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
+                    <p class="flex flex-wrap justify-between gap-4 text-sm leading-6 text-gray-500 dark:text-gray-400">
+                        Abrogación de la ley Copa.
+                        <a href="#" class="inline-flex items-center gap-1 text-blue-600 hover:underline hover:underline-offset-4 dark:text-blue-400">
+                            Ver noticia
+                            <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="md:col-span-1 md:p-6">
+                <h4 class="font-medium text-gray-900 dark:text-gray-100">Valoracion</h4>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Requiere negociación</p>
+                <div class="mt-6 flex items-center gap-4">
+                    <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-medium text-blue-600 dark:bg-gray-800 dark:text-blue-400">MR</span>
+                    <div>
+                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Magisterio Rural</p>
+                        <a href="mailto:#" class="mt-0.5 block text-sm text-blue-600 dark:text-blue-400">Bono Zona</a>
+                    </div>
+                    
+                </div>
+                <div class="mt-6 flex items-center gap-4">
+                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                </div>
+            </div>
+        </div>
+
+        <p class="mt-14 font-medium text-gray-900 dark:text-gray-100">Relacionadas</p>
+        <div class="mt-8 overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <th class="px-4 py-3 text-sm font-semibold text-gray-900 dark:text-gray-100">Date</th>
+                        <th class="px-4 py-3 text-sm font-semibold text-gray-900 dark:text-gray-100">Description</th>
+                        <th class="px-4 py-3 text-sm font-semibold text-gray-900 dark:text-gray-100">Valoración</th>
+                        <th class="px-4 py-3 text-right text-sm font-semibold text-gray-900 dark:text-gray-100">Riesgo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <td class="px-4 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">Dec 23</td>
+                        <td class="px-4 py-4 text-sm">Venture debt loan repayment</td>
+                        <td class="px-4 py-4 text-sm">Calantis business account</td>
+                        <td class="px-4 py-4 text-right text-sm font-medium text-gray-900 dark:text-gray-100">R 0.80</td>
+                    </tr>
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <td class="px-4 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">Nov 23</td>
+                        <td class="px-4 py-4 text-sm">Venture debt loan repayment</td>
+                        <td class="px-4 py-4 text-sm">Calantis business account</td>
+                        <td class="px-4 py-4 text-right text-sm font-medium text-gray-900 dark:text-gray-100">R 0.70</td>
+                    </tr>
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <td class="px-4 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">Oct 23</td>
+                        <td class="px-4 py-4 text-sm">Venture debt loan repayment</td>
+                        <td class="px-4 py-4 text-sm">Calantis business account</td>
+                        <td class="px-4 py-4 text-right text-sm font-medium text-gray-900 dark:text-gray-100">R 0.60</td>
+                    </tr>
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <td class="px-4 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">Sep 23</td>
+                        <td class="px-4 py-4 text-sm">Venture debt loan funding</td>
+                        <td class="px-4 py-4 text-sm">Calantis business account</td>
+                        <td class="px-4 py-4 text-right text-sm font-medium text-emerald-700 dark:text-emerald-500">R 0.50</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
