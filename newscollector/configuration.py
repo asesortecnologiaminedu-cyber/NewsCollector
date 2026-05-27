@@ -11,6 +11,7 @@ except ImportError:  # pragma: no cover - direct script execution support
     from logging_utils import log_info
 
 PACKAGE_DIR = Path(__file__).resolve().parent
+DEFAULT_TEMPLATE = "c0omposition-14.tsx"
 
 
 def _read_sources_json(file_path: Path) -> dict[str, Any]:
@@ -43,15 +44,49 @@ def parse_date(value: date | str) -> date:
 
 
 def validate_template(template_name: str) -> tuple[str, str]:
-    custom_template_path = Path("templates") / template_name
-    if custom_template_path.exists():
-        log_info(f'Using custom "{template_name}" as template file.')
-        return template_name, "templates"
+    requested_template = _resolve_template_path(template_name)
+    if requested_template is not None:
+        renderable_name, renderable_dir = _resolve_renderable_template(requested_template)
+        log_info(
+            f'Using custom "{requested_template.name}" as template file '
+            f'(rendering "{renderable_name}").'
+        )
+        return renderable_name, renderable_dir
 
-    package_template_name = "newsletter.html"
-    package_template_dir = PACKAGE_DIR / "templates"
-    log_info('Using package default "newsletter.html" as template file.')
-    return package_template_name, str(package_template_dir)
+    package_template_path = PACKAGE_DIR / "templates" / DEFAULT_TEMPLATE
+    renderable_name, renderable_dir = _resolve_renderable_template(package_template_path)
+    log_info(
+        f'Using package default "{DEFAULT_TEMPLATE}" as template file '
+        f'(rendering "{renderable_name}").'
+    )
+    return renderable_name, renderable_dir
+
+
+def _resolve_template_path(template_name: str) -> Path | None:
+    candidates = [
+        Path(template_name),
+        Path("templates") / template_name,
+        PACKAGE_DIR / "templates" / template_name,
+    ]
+
+    for candidate in candidates:
+        if candidate.exists() and candidate.is_file():
+            return candidate.resolve()
+
+    return None
+
+
+def _resolve_renderable_template(template_path: Path) -> tuple[str, str]:
+    if template_path.suffix.lower() == ".tsx":
+        html_template = template_path.with_suffix(".html")
+        if html_template.exists() and html_template.is_file():
+            return html_template.name, str(html_template.parent)
+
+        raise FileNotFoundError(
+            f'Could not locate companion HTML template for "{template_path}".'
+        )
+
+    return template_path.name, str(template_path.parent)
 
 
 def load_sources(file_name: str) -> dict[str, Any]:

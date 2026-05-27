@@ -155,6 +155,8 @@ def _render_markdown_report(canonical_report: dict[str, Any]) -> str:
         source = cluster.get("source", "")
         url = cluster.get("url", "")
         pic = cluster.get("pic", "")
+        authors = _normalize_text_list(cluster.get("authors") or cluster.get("author"))
+        actors = _normalize_text_list(cluster.get("actor") or cluster.get("actors"))
         cluster_date = cluster.get("date", "")
         cluster_time = cluster.get("time", "")
         body = cluster.get("body", "")
@@ -167,6 +169,10 @@ def _render_markdown_report(canonical_report: dict[str, Any]) -> str:
             lines.append(f"- Hora: {cluster_time}")
         lines.append(f"- Fuente: {source}")
         lines.append(f"- URL: {url}")
+        if authors:
+            lines.append(f"- Autores: {', '.join(authors)}")
+        if actors:
+            lines.append(f"- Actores: {', '.join(actors)}")
         if pic:
             lines.append(f"- Imagen: {pic}")
         lines.append("")
@@ -220,6 +226,8 @@ def _build_template_clusters(clusters_dict: Clusters) -> list[dict[str, Any]]:
             "pic": _get_article_field(main_article, "image_url"),
             "title": _get_article_field(main_article, "title"),
             "body": _get_article_field(main_article, "body"),
+            "authors": _get_article_list_field(main_article, "authors"),
+            "actor": _get_article_list_field(main_article, "actor"),
             "similar": [],
         }
 
@@ -246,6 +254,18 @@ def _get_article_field(article: Any, field: str) -> str:
         value = ""
 
     return str(value or "").strip()
+
+
+def _get_article_list_field(article: Any, field: str) -> list[str]:
+    try:
+        if hasattr(article, "get"):
+            value = article.get(field, [])
+        else:
+            value = article[field]
+    except Exception:
+        value = []
+
+    return _normalize_text_list(value)
 
 
 def _merge_with_existing_report(
@@ -327,6 +347,8 @@ def _normalize_cluster(cluster: dict[str, Any], fallback_news_date: str) -> dict
         "pic": _normalize_text(cluster.get("pic") or cluster.get("image_url")),
         "title": _normalize_text(cluster.get("title")),
         "body": _normalize_text(cluster.get("body")),
+        "authors": _normalize_text_list(cluster.get("authors") or cluster.get("author")),
+        "actor": _normalize_text_list(cluster.get("actor") or cluster.get("actors")),
         "similar": _normalize_similar_entries(cluster.get("similar")),
     }
     return normalized_cluster
@@ -405,6 +427,14 @@ def _merge_cluster_values(
         merged_similar_entries.extend(incoming_similar)
 
     merged_cluster["similar"] = _normalize_similar_entries(merged_similar_entries)
+    merged_cluster["authors"] = _merge_text_lists(
+        existing_cluster.get("authors"),
+        incoming_cluster.get("authors"),
+    )
+    merged_cluster["actor"] = _merge_text_lists(
+        existing_cluster.get("actor") or existing_cluster.get("actors"),
+        incoming_cluster.get("actor") or incoming_cluster.get("actors"),
+    )
     return merged_cluster
 
 
@@ -461,6 +491,52 @@ def _normalize_time(value: Any) -> str:
         return ""
 
     return time_value.split(" ")[0]
+
+
+def _merge_text_lists(*values: Any) -> list[str]:
+    merged: list[str] = []
+    for value in values:
+        merged.extend(_normalize_text_list(value))
+
+    return _normalize_text_list(merged)
+
+
+def _normalize_text_list(value: Any) -> list[str]:
+    if isinstance(value, str):
+        normalized = value.strip()
+        return [normalized] if normalized else []
+
+    if isinstance(value, dict):
+        if "name" in value:
+            return _normalize_text_list(value.get("name"))
+        if "term" in value:
+            return _normalize_text_list(value.get("term"))
+        if "value" in value:
+            return _normalize_text_list(value.get("value"))
+        return []
+
+    if isinstance(value, (list, tuple, set)):
+        candidates: list[str] = []
+        for item in value:
+            candidates.extend(_normalize_text_list(item))
+    elif value is None:
+        candidates = []
+    else:
+        candidates = [str(value).strip()]
+
+    normalized_values: list[str] = []
+    seen: set[str] = set()
+    for candidate in candidates:
+        text = str(candidate or "").strip()
+        if not text:
+            continue
+        key = text.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        normalized_values.append(text)
+
+    return normalized_values
 
 
 def _normalize_text(value: Any) -> str:

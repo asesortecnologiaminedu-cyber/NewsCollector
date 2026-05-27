@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>General Settings</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100">
+  <main class="mx-auto max-w-7xl p-6 sm:p-8">
+    <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">General</h3>
+    <p class="mt-2 max-w-3xl text-sm leading-6 text-gray-600 dark:text-gray-400">
+      Manage your personal details, workspace governance and notifications.
+    </p>
+
+    <div class="mt-6 border-b border-gray-200 dark:border-gray-700">
+      <div class="flex flex-wrap items-center gap-6">
+        <button type="button" class="border-b-2 border-transparent pb-2 text-sm font-medium text-gray-500 dark:text-gray-400">Account details</button>
+        <button type="button" class="border-b-2 border-blue-600 pb-2 text-sm font-medium text-blue-600 dark:border-blue-400 dark:text-blue-400">Settings</button>
+        <button type="button" class="border-b-2 border-transparent pb-2 text-sm font-medium text-gray-500 dark:text-gray-400">Billing</button>
+      </div>
+    </div>
+
+    <form action="#" method="POST">
+      <section class="mt-8 rounded-lg bg-gray-100 p-6 ring-1 ring-inset ring-gray-200 dark:bg-gray-900 dark:ring-gray-700">
+        <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">This workspace is currently on free plan</h4>
+        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          Boost your analytics and unlock advanced features with our premium plans.
+        </p>
+        <div class="mt-6 flex items-center gap-2">
+          <a href="#" class="inline-flex h-8 items-center rounded-md bg-blue-600 px-3 text-sm font-medium text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+            Compare Plans
+          </a>
+          <button type="button" class="inline-flex h-8 items-center rounded-md border border-gray-300 bg-white px-3 text-sm font-medium text-gray-700 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-300 dark:hover:text-gray-100">
+            Dismiss
+          </button>
+        </div>
+      </section>
+
+      <section class="mt-6 max-w-lg space-y-8">
+        <div>
+          <label for="workspace-name" class="text-sm font-semibold text-gray-900 dark:text-gray-100">Name</label>
+          <input id="workspace-name" type="text" disabled placeholder="sales-dashboard" class="mt-2 block w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-sm text-gray-500 outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400">
+          <p class="mt-2 text-xs text-gray-600 dark:text-gray-400">Contact your admin to change workspace names in production.</p>
+        </div>
+
+        <div>
+          <label for="default-model" class="text-sm font-semibold text-gray-900 dark:text-gray-100">Default model</label>
+          <select id="default-model" name="default-model" class="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100">
+            <option selected>GPT-3.5 (OpenAI)</option>
+            <option>BERT (Google)</option>
+            <option>LLaMA (Facebook)</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="training-cycle" class="text-sm font-semibold text-gray-900 dark:text-gray-100">Training cycle</label>
+          <select id="training-cycle" name="training-cycle" class="mt-2 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100">
+            <option>Every 24 hours</option>
+            <option selected>Once in a week</option>
+            <option>Once in a month</option>
+          </select>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Workspace governance</h4>
+          <div class="mt-6 space-y-6">
+            <div class="relative flex items-start">
+              <div class="flex h-6 items-center">
+                <input id="checkbox-1" name="checkbox-1" type="checkbox" class="size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-900 dark:text-blue-500">
+              </div>
+              <div class="ml-3 text-sm leading-6">
+                <label for="checkbox-1" class="font-medium text-gray-900 dark:text-gray-100">Require team member approval for deploy requests</label>
+                <p class="text-gray-600 dark:text-gray-400">Lorem ipsum dolor sit amet, consetetur sadipscing elitr.</p>
+              </div>
+            </div>
+
+            <div class="relative flex items-start">
+              <div class="flex h-6 items-center">
+                <input id="checkbox-2" name="checkbox-2" type="checkbox" class="size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-900 dark:text-blue-500">
+              </div>
+              <div class="ml-3 text-sm leading-6">
+                <label for="checkbox-2" class="font-medium text-gray-900 dark:text-gray-100">Enable audit logs</label>
+                <p class="text-gray-600 dark:text-gray-400">Lorem ipsum dolor sit amet.</p>
+              </div>
+            </div>
+
+            <div class="relative flex items-start">
+              <div class="flex h-6 items-center">
+                <input id="checkbox-3" name="checkbox-3" type="checkbox" class="size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-900 dark:text-blue-500">
+              </div>
+              <div class="ml-3 text-sm leading-6">
+                <label for="checkbox-3" class="font-medium text-gray-900 dark:text-gray-100">Enable email notifications for model deployment activities</label>
+                <p class="text-gray-600 dark:text-gray-400">
+                  Labore et dolore magna aliquyam erat. Lorem ipsum dolor sit amet, consetetur sadipscing elitr.
+                  <a href="#" class="ml-1 inline-flex items-center gap-1 text-blue-600 hover:underline hover:underline-offset-4 dark:text-blue-400">
+                    Go to email settings
+                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M15 3h6v6"></path>
+                      <path d="M10 14L21 3"></path>
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    </svg>
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <hr class="my-10 border-gray-200 dark:border-gray-700">
+
+      <div class="flex items-center justify-end gap-4">
+        <button type="button" class="rounded-md px-4 py-2.5 text-sm font-medium text-gray-800 dark:text-gray-200">Cancel</button>
+        <button type="submit" class="rounded-md bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">Save settings</button>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

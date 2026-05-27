@@ -111,6 +111,8 @@ def _scrape_entry(
         return None, "download"
 
     try:
+        article_authors = _extract_authors(entry, article_content)
+        article_actors = _extract_actors(entry, article_content)
         return {
             "source": source_name,
             "url": article_link,
@@ -121,7 +123,86 @@ def _scrape_entry(
             "summary": article_content.summary,
             "keywords": article_content.keywords,
             "image_url": article_content.top_image,
+            "authors": article_authors,
+            "actor": article_actors,
         }, None
     except Exception as exc:
         log_warn(f'Failed to map parsed article for source "{source_name}": {exc}')
         return None, "article"
+
+
+def _extract_authors(entry: Any, article_content: Any) -> list[str]:
+    entry_authors: list[str] = []
+    raw_entry_authors = getattr(entry, "authors", None)
+    if isinstance(raw_entry_authors, list):
+        for item in raw_entry_authors:
+            if isinstance(item, dict):
+                entry_authors.append(str(item.get("name") or "").strip())
+            else:
+                entry_authors.append(str(item or "").strip())
+
+    article_authors = _normalize_string_list(getattr(article_content, "authors", []))
+    return _normalize_string_list(entry_authors + article_authors)
+
+
+def _extract_actors(entry: Any, article_content: Any) -> list[str]:
+    actor_candidates: list[str] = []
+
+    raw_entry_actor = getattr(entry, "actor", None)
+    raw_entry_actors = getattr(entry, "actors", None)
+
+    actor_candidates.extend(_normalize_string_list(raw_entry_actor))
+    actor_candidates.extend(_normalize_string_list(raw_entry_actors))
+
+    raw_tags = getattr(entry, "tags", None)
+    if isinstance(raw_tags, list):
+        for tag in raw_tags:
+            if not isinstance(tag, dict):
+                continue
+            term = str(tag.get("term") or "").strip()
+            if term.lower().startswith("persona:"):
+                actor_candidates.append(term.split(":", 1)[1].strip())
+
+    meta_data = getattr(article_content, "meta_data", None)
+    if isinstance(meta_data, dict):
+        actor_candidates.extend(_normalize_string_list(meta_data.get("actor")))
+        actor_candidates.extend(_normalize_string_list(meta_data.get("actors")))
+
+    return _normalize_string_list(actor_candidates)
+
+
+def _normalize_string_list(value: Any) -> list[str]:
+    if isinstance(value, str):
+        normalized = value.strip()
+        return [normalized] if normalized else []
+
+    if isinstance(value, dict):
+        if "name" in value:
+            return _normalize_string_list(value.get("name"))
+        if "term" in value:
+            return _normalize_string_list(value.get("term"))
+        if "value" in value:
+            return _normalize_string_list(value.get("value"))
+        return []
+
+    if isinstance(value, (list, tuple, set)):
+        items: list[str] = []
+        for item in value:
+            items.extend(_normalize_string_list(item))
+    elif value is None:
+        items = []
+    else:
+        items = [str(value).strip()]
+
+    deduplicated: list[str] = []
+    seen: set[str] = set()
+    for item in items:
+        if not item:
+            continue
+        normalized_key = item.lower()
+        if normalized_key in seen:
+            continue
+        seen.add(normalized_key)
+        deduplicated.append(item)
+
+    return deduplicated

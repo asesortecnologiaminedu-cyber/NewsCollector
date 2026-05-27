@@ -34,7 +34,12 @@ class ConfigurationTests(unittest.TestCase):
 
     def test_validate_template_falls_back_to_package_default(self) -> None:
         template_name, template_path = validate_template("missing-template.html")
-        self.assertEqual(template_name, "newsletter.html")
+        self.assertEqual(template_name, "c0omposition-14.html")
+        self.assertTrue(Path(template_path).exists())
+
+    def test_validate_template_accepts_tsx_and_uses_html_companion(self) -> None:
+        template_name, template_path = validate_template("c0omposition-14.tsx")
+        self.assertEqual(template_name, "c0omposition-14.html")
         self.assertTrue(Path(template_path).exists())
 
     def test_load_sources_reads_custom_file(self) -> None:

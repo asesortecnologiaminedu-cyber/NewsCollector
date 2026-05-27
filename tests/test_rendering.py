@@ -36,6 +36,8 @@ class RenderingTests(unittest.TestCase):
                         "image_url": "https://example.com/image.png",
                         "title": "Headline",
                         "body": "Body text",
+                        "authors": ["Author One", "Author Two"],
+                        "actor": ["Actor A"],
                     },
                     {
                         "source": "Source B",
@@ -43,6 +45,8 @@ class RenderingTests(unittest.TestCase):
                         "image_url": "https://example.com/image2.png",
                         "title": "Related",
                         "body": "Related body",
+                        "authors": ["Author One", "Author Two"],
+                        "actor": ["Actor A"],
                     },
                 ]
             }
@@ -73,6 +77,10 @@ class RenderingTests(unittest.TestCase):
             self.assertIn(consolidated_title, rendered)
             self.assertIn(consolidated_title, markdown_rendered)
 
+            first_cluster = consolidated_report["clusters"][0]
+            self.assertEqual(first_cluster["authors"], ["Author One", "Author Two"])
+            self.assertEqual(first_cluster["actor"], ["Actor A"])
+
     def test_build_html_merges_existing_daily_json_without_duplicates(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
@@ -99,6 +107,8 @@ class RenderingTests(unittest.TestCase):
                         "pic": "https://example.com/image.png",
                         "title": "Existing headline",
                         "body": "Existing body",
+                        "authors": ["Author Existing"],
+                        "actor": ["Actor Existing"],
                         "similar": [],
                     }
                 ],
@@ -115,6 +125,8 @@ class RenderingTests(unittest.TestCase):
                         "body": "Existing body updated",
                         "date": "2026-05-26",
                         "time": "09:00:00 UTC",
+                        "authors": ["Author Incoming"],
+                        "actor": ["Actor Existing", "Actor Incoming"],
                     }
                 ],
                 1: [
@@ -147,6 +159,11 @@ class RenderingTests(unittest.TestCase):
             self.assertEqual(merged_clusters[0]["url"], "https://example.com/2")
             self.assertEqual(merged_clusters[1]["url"], "https://example.com/1")
             self.assertEqual(merged_clusters[1]["title"], "Existing headline updated")
+            self.assertEqual(merged_clusters[1]["authors"], ["Author Existing", "Author Incoming"])
+            self.assertEqual(
+                merged_clusters[1]["actor"],
+                ["Actor Existing", "Actor Incoming"],
+            )
 
 
 if __name__ == "__main__":

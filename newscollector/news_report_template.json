@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.1",
+  "news_name": "",
+  "news_date": "",
+  "clusters": [
+    {
+      "position": 0,
+      "date": "",
+      "time": "",
+      "source": "",
+      "url": "",
+      "pic": "",
+      "title": "",
+      "body": "",
+      "authors": [],
+      "actor": [],
+      "similar": [
+        {
+          "source": "",
+          "url": ""
+        }
+      ]
+    }
+  ]
+}

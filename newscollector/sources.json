@@ -1,4 +1,9 @@
-{
+{ "GmailRSS": 
+  {"rss": [
+    "https://www.google.com/alerts/feeds/12345678901234567890/9876543210123456789"
+    ]
+  },
+
   "Agencia Boliviana de Información (ABI)": {
     "rss": [
       "https://abi.bo/feed/",

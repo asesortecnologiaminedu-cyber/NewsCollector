@@ -70,7 +70,7 @@ class NewsCollector:
         sources: str = "sources.json",
         news_name: str = "Actualización diaria de noticias",
         news_date: date | str | None = None,
-        template: str = "newsletter.html",
+        template: str = "c0omposition-14.tsx",
         output_filename: str = "default",
         auto_open: bool = False,
         return_details: bool = False,
@@ -368,7 +368,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "--template",
         type=str,
         required=False,
-        default="newsletter.html",
+        default="c0omposition-14.tsx",
         help="Filename of the template HTML newsletter file.",
     )
     parser.add_argument(
