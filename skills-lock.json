@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "python": {
+      "source": "mindrally/skills",
+      "sourceType": "github",
+      "skillPath": "python/SKILL.md",
+      "computedHash": "5966c2861cc999b03e10ef13f07925755acf62f115962a6249ad0d8c826c4df0"
+    },
+    "tailwindcss-advanced-layouts": {
+      "source": "josiahsiegel/claude-plugin-marketplace",
+      "sourceType": "github",
+      "skillPath": "plugins/tailwindcss-master/skills/tailwindcss-advanced-layouts/SKILL.md",
+      "computedHash": "159d8a8f9eb20136492a9971633fd8658be1e34d5f8dc3bcf1afe7bbb4511bdf"
+    }
+  }
+}

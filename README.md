@@ -19,6 +19,16 @@ pip install py-newscollector
 
 > :closed_book: Read more about how the algorithm of NewsCollector works in [my Medium article](https://medium.com/@eliselandman/automated-news-article-collection-with-python-9267968c9ea).
 
+## Documentation (Diataxis)
+
+Project documentation is organized under `doc/`:
+
+- Overview: [doc/README.md](doc/README.md)
+- Tutorial: [doc/tutorials/create-your-first-newsletter.md](doc/tutorials/create-your-first-newsletter.md)
+- How-to: [doc/how-to/configure-ai-post-processing.md](doc/how-to/configure-ai-post-processing.md)
+- Reference: [doc/reference/newscollector-reference.md](doc/reference/newscollector-reference.md)
+- Explanation: [doc/explanation/newscollector-architecture.md](doc/explanation/newscollector-architecture.md)
+
 -------
 
 ## Description
@@ -90,7 +100,7 @@ To adjust the default settings, please refer to [Additional Parameters](https://
 You can customize the NewsCollector algorithm with the following optional parameters:
 
 ```Python
-newsletter = NewsCollector(sources="sources.json", news_name="Daily News Update", 
+newsletter = NewsCollector(sources="sources.json", news_name="Actualización diaria de noticias", 
                            news_date=date.today(), template='newsletter.html', 
                            output_filename='default', auto_open=False, 
                            return_details=False)
