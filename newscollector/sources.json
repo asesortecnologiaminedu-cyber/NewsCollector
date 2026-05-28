@@ -1,6 +1,19 @@
-{ "GmailRSS": 
+{ 
+"GmailRSS": 
   {"rss": [
-    "https://www.google.com/alerts/feeds/12345678901234567890/9876543210123456789"
+    "https://www.google.com.bo/alerts/feeds/11224809746432282209/8431635062307115226",
+    "https://www.google.com.bo/alerts/feeds/11224809746432282209/18237116158435343468",
+    "https://www.google.com.bo/alerts/feeds/11224809746432282209/5046528465086275549",
+    "https://www.google.com.bo/alerts/feeds/11224809746432282209/2603939175943494425",
+    "https://www.google.com.bo/alerts/feeds/11224809746432282209/17611299434267074289",
+    "https://www.google.com.bo/alerts/feeds/11224809746432282209/2603939175943492987",
+    "https://www.google.com.bo/alerts/feeds/11224809746432282209/7429557275878288640",
+    "https://www.google.com.bo/alerts/feeds/11224809746432282209/5304085857890762653",
+    "https://www.google.com.bo/alerts/feeds/11224809746432282209/3107476834467406647",
+    "https://www.google.com.bo/alerts/feeds/11224809746432282209/816774215001564371",
+    "https://www.google.com.bo/alerts/feeds/11224809746432282209/7388532043308871336",
+    "https://www.google.com.bo/alerts/feeds/11224809746432282209/13472764091241307239",
+    "https://www.google.com.bo/alerts/feeds/11224809746432282209/14936925690942814350"
     ]
   },
 

@@ -34,6 +34,8 @@ class RenderingTests(unittest.TestCase):
                         "source": "Source A",
                         "url": "https://example.com/1",
                         "image_url": "https://example.com/image.png",
+                        "dateTimeNews": "2026-05-26T08:00:00+00:00",
+                        "dateTimeReceived": "2026-05-26T08:05:00+00:00",
                         "title": "Headline",
                         "body": "Body text",
                         "authors": ["Author One", "Author Two"],
@@ -43,6 +45,8 @@ class RenderingTests(unittest.TestCase):
                         "source": "Source B",
                         "url": "https://example.com/2",
                         "image_url": "https://example.com/image2.png",
+                        "dateTimeNews": "2026-05-26T07:00:00+00:00",
+                        "dateTimeReceived": "2026-05-26T07:05:00+00:00",
                         "title": "Related",
                         "body": "Related body",
                         "authors": ["Author One", "Author Two"],
@@ -80,6 +84,8 @@ class RenderingTests(unittest.TestCase):
             first_cluster = consolidated_report["clusters"][0]
             self.assertEqual(first_cluster["authors"], ["Author One", "Author Two"])
             self.assertEqual(first_cluster["actor"], ["Actor A"])
+            self.assertEqual(first_cluster["dateTimeNews"], "2026-05-26T08:00:00+00:00")
+            self.assertEqual(first_cluster["dateTimeReceived"], "2026-05-26T08:05:00+00:00")
 
     def test_build_html_merges_existing_daily_json_without_duplicates(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -100,8 +106,8 @@ class RenderingTests(unittest.TestCase):
                 "clusters": [
                     {
                         "position": 1,
-                        "date": "2026-05-26",
-                        "time": "08:00:00",
+                        "dateTimeNews": "2026-05-26T08:00:00+00:00",
+                        "dateTimeReceived": "2026-05-26T08:05:00+00:00",
                         "source": "Source A",
                         "url": "https://example.com/1",
                         "pic": "https://example.com/image.png",
@@ -123,8 +129,8 @@ class RenderingTests(unittest.TestCase):
                         "image_url": "https://example.com/image.png",
                         "title": "Existing headline updated",
                         "body": "Existing body updated",
-                        "date": "2026-05-26",
-                        "time": "09:00:00 UTC",
+                        "dateTimeNews": "2026-05-26T09:00:00+00:00",
+                        "dateTimeReceived": "2026-05-26T09:05:00+00:00",
                         "authors": ["Author Incoming"],
                         "actor": ["Actor Existing", "Actor Incoming"],
                     }
@@ -136,8 +142,8 @@ class RenderingTests(unittest.TestCase):
                         "image_url": "https://example.com/image2.png",
                         "title": "New headline",
                         "body": "New body",
-                        "date": "2026-05-26",
-                        "time": "10:00:00 UTC",
+                        "dateTimeNews": "2026-05-26T10:00:00+00:00",
+                        "dateTimeReceived": "2026-05-26T10:05:00+00:00",
                     }
                 ],
             }
@@ -159,6 +165,8 @@ class RenderingTests(unittest.TestCase):
             self.assertEqual(merged_clusters[0]["url"], "https://example.com/2")
             self.assertEqual(merged_clusters[1]["url"], "https://example.com/1")
             self.assertEqual(merged_clusters[1]["title"], "Existing headline updated")
+            self.assertEqual(merged_clusters[1]["dateTimeNews"], "2026-05-26T09:00:00+00:00")
+            self.assertEqual(merged_clusters[1]["dateTimeReceived"], "2026-05-26T09:05:00+00:00")
             self.assertEqual(merged_clusters[1]["authors"], ["Author Existing", "Author Incoming"])
             self.assertEqual(
                 merged_clusters[1]["actor"],

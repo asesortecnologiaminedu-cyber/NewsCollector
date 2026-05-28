@@ -3,8 +3,7 @@
 Fecha: 2026-05-27
 
 ## 1. Diputada socialista de Argentina participó en movilizaciones en Senkata y discursa contra el Gobierno de Paz
-- Fecha: 2026-05-27
-- Hora: 19:50:24
+- Publicado: 2026-05-27T19:50:24+00:00
 - Fuente: Oxígeno
 - URL: https://oxigeno.bo/diputada-socialista-de-argentina-participo-en-movilizaciones-en-senkata-y-discursa-contra-el-gobierno-de-paz/
 - Imagen: https://oxigeno.bo/wp-content/uploads/2026/05/diputada_argentina_elalto.jpg
@@ -33,8 +32,7 @@ Cobertura similar:
 - El Deber: https://eldeber.com.bo/pais/diputada-argentina-llega-alto-destaca-protestas-pusieron-jaque-gobierno_1779899768
 
 ## 2. Diálogo en Vicepresidencia: Acuerdan ampliar convocatoria a dirigentes para lograr pacificación
-- Fecha: 2026-05-27
-- Hora: 19:00:06
+- Publicado: 2026-05-27T19:00:06+00:00
 - Fuente: La Razón
 - URL: https://larazon.bo/nacional/2026/05/27/vicepresidencia-comision-de-dialogo-acuerda-ampliar-convocatoria-para-destrabar-la-crisis/
 - Imagen: https://larazon.bo/wp-content/uploads/2026/05/707415637_1392464762913759_3024673879377028805_n.webp
@@ -65,8 +63,7 @@ Cobertura similar:
 - Oxígeno: https://oxigeno.bo/comision-de-dialogo-acuerda-gestionar-la-presencia-de-todos-los-sectores-sociales-y-continuara-este-jueves/
 
 ## 3. Choferes en La Paz van a paro indefinido, piden dimisión de Paz
-- Fecha: 2026-05-27
-- Hora: 18:14:56
+- Publicado: 2026-05-27T18:14:56+00:00
 - Fuente: El Mundo
 - URL: https://elmundo.com.bo/choferes-en-la-paz-van-a-paro-indefinido-piden-dimision-de-paz/
 - Imagen: https://elmundo.com.bo/wp-content/uploads/2026/05/1-5-21.webp
@@ -93,8 +90,7 @@ Cobertura similar:
 - Oxígeno: https://oxigeno.bo/choferes-de-la-paz-declaran-paro-indefinido-desde-el-miercoles-y-sus-bases-ya-piden-la-renuncia-de-paz/
 
 ## 4. Diputados abroga “Ley Copa” que regulaba Estados de Excepción
-- Fecha: 2026-05-27
-- Hora: 18:11:39
+- Publicado: 2026-05-27T18:11:39+00:00
 - Fuente: El Mundo
 - URL: https://elmundo.com.bo/diputados-abroga-ley-copa-que-regulaba-estados-de-excepcion/
 - Imagen: https://elmundo.com.bo/wp-content/uploads/2026/05/1-4-22.webp
@@ -123,8 +119,7 @@ Cobertura similar:
 - Sumando Voces: https://sumandovoces.com.bo/paz-promulga-la-abrogacion-de-la-ley-de-estados-de-excepcion-en-medio-de-la-crisis-por-bloqueos/
 
 ## 5. Embajada de EEUU en Bolivia emite una alerta de seguridad
-- Fecha: 2026-05-27
-- Hora: 18:06:35
+- Publicado: 2026-05-27T18:06:35+00:00
 - Fuente: El Mundo
 - URL: https://elmundo.com.bo/embajada-de-eeuu-en-bolivia-emite-una-alerta-de-seguridad/
 - Imagen: https://elmundo.com.bo/wp-content/uploads/2026/05/2-3-10.webp
@@ -143,8 +138,7 @@ Cobertura similar:
 - Oxígeno: https://oxigeno.bo/embajada-de-eeuu-suspende-servicios-consulares-en-la-paz-y-pide-a-sus-ciudadanos-evitar-viajes-por-bolivia/
 
 ## 6. Policía reporta 150 puntos de bloqueo, y pide “humanidad”
-- Fecha: 2026-05-27
-- Hora: 18:05:07
+- Publicado: 2026-05-27T18:05:07+00:00
 - Fuente: El Mundo
 - URL: https://elmundo.com.bo/policia-reporta-150-puntos-de-bloqueo-y-pide-humanidad/
 - Imagen: https://elmundo.com.bo/wp-content/uploads/2026/05/1-3-11.webp
@@ -173,8 +167,7 @@ Cobertura similar:
 - Oxígeno: https://oxigeno.bo/policia-reporta-150-puntos-de-bloqueo-y-pide-humanidad-para-permitir-el-paso-de-alimentos-combustible-y-medicamentos/
 
 ## 7. Trasladan a líder del PCC a Brasil - La Patria 3.0
-- Fecha: 2026-05-27
-- Hora: 18:04:46
+- Publicado: 2026-05-27T18:04:46+00:00
 - Fuente: La Patria
 - URL: https://lapatria.bo/enfoque-nacional/trasladan-a-lider-del-pcc-a-brasil/
 - Imagen: https://lapatria.bo/wp-content/uploads/2026/05/6a172ffde5331.jpg
@@ -253,8 +246,7 @@ Cobertura similar:
 - El Deber: https://eldeber.com.bo/santa-cruz/fuerte-dispositivo-seguridad-trasladan-capo-pcc-brasil_1779899804
 
 ## 8. Embajada de EEUU suspende servicios consulares en La Paz y pide a sus ciudadanos evitar viajes por Bolivia
-- Fecha: 2026-05-27
-- Hora: 17:59:43
+- Publicado: 2026-05-27T17:59:43+00:00
 - Fuente: Oxígeno
 - URL: https://oxigeno.bo/embajada-de-eeuu-suspende-servicios-consulares-en-la-paz-y-pide-a-sus-ciudadanos-evitar-viajes-por-bolivia/
 - Imagen: https://oxigeno.bo/wp-content/uploads/2026/05/embajada_eeuu_bolivia.png
@@ -277,8 +269,7 @@ Cobertura similar:
 - Asuntos Centrales: https://asuntoscentrales.com/embajada-de-estados-unidos-suspende-servicios-consulares-por-dos-dias-ante-los-bloqueos-en-bolivia/
 
 ## 9. Migración anuncia acciones ante Cancillería por intromisión de diputada argentina en asuntos de Bolivia
-- Fecha: 2026-05-27
-- Hora: 17:59:22
+- Publicado: 2026-05-27T17:59:22+00:00
 - Fuente: Oxígeno
 - URL: https://oxigeno.bo/migracion-anuncia-acciones-ante-cancilleria-por-intromision-de-diputada-argentina-en-asuntos-de-bolivia/
 - Imagen: https://oxigeno.bo/wp-content/uploads/2026/05/diputada_argentina_elalto1.png
@@ -300,8 +291,7 @@ Cobertura similar:
 - RTP Bolivia: https://rtpbolivia.com.bo/politica/migracion-activa-acciones-contra-diputada-argentina-por-actos-de-intromision-en-bolivia/
 
 ## 10. Durante el Mundial: 18.000 efectivos resguardarán Guadalajara - La Patria 3.0
-- Fecha: 2026-05-27
-- Hora: 17:58:51
+- Publicado: 2026-05-27T17:58:51+00:00
 - Fuente: La Patria
 - URL: https://lapatria.bo/global/durante-el-mundial-18-000-efectivos-resguardaran-guadalajara/
 - Imagen: https://lapatria.bo/wp-content/uploads/2026/05/6a172e3c423bf.jpg
@@ -354,8 +344,7 @@ Cobertura similar:
 - El Deber: https://eldeber.com.bo/deportes/guadalajara-tendra-18-000-personas-encargadas-seguridad-mundial_1779901617
 
 ## 11. Denuncian a exfuncionarios de la alcaldía cruceña por corrupción
-- Fecha: 2026-05-27
-- Hora: 17:34:08
+- Publicado: 2026-05-27T17:34:08+00:00
 - Fuente: La Razón
 - URL: https://larazon.bo/ciudades/2026/05/27/denuncian-a-exfuncionarios-de-la-alcaldia-crucena-por-corrupcion/
 - Imagen: https://larazon.bo/wp-content/uploads/2026/05/captura-de-pantalla-2026-05-27-120445_101-15564945_20260527160503.webp
@@ -382,8 +371,7 @@ Cobertura similar:
 - El Deber: https://eldeber.com.bo/santa-cruz/alcaldia-crucena-denuncia-cuatro-exfuncionarios-venta-items-titulos-falsificados_1779897422
 
 ## 12. ‘Quiero que organizaciones sociales sean parte del Gobierno’, dice Paz y llama a la COB y a la Túpac
-- Fecha: 2026-05-27
-- Hora: 17:17:13
+- Publicado: 2026-05-27T17:17:13+00:00
 - Fuente: La Razón
 - URL: https://larazon.bo/nacional/2026/05/27/quiero-que-organizaciones-sociales-sean-parte-del-gobierno-dice-paz-y-llama-a-la-cob-y-la-tupac/
 - Imagen: https://larazon.bo/wp-content/uploads/2026/05/WhatsApp-Image-2026-05-27-at-12.45.38.webp
@@ -416,8 +404,7 @@ Cobertura similar:
 - El Deber: https://eldeber.com.bo/pais/presidente-paz-convoca-todos-dialogo-pide-respaldo-gobernar-27-dias-bloqueos_1779900497
 
 ## 13. “Tengo instrumentos constitucionales, el tiempo se acaba”: Rodrigo Paz convoca a bloqueadores a dialogar esta tarde
-- Fecha: 2026-05-27
-- Hora: 17:08:42
+- Publicado: 2026-05-27T17:08:42+00:00
 - Fuente: El Deber
 - URL: https://eldeber.com.bo/pais/yo-tengo-instrumentos-constitucionales-tiempo-acaba-rodrigo-paz-convoca-bloqueadores-dialogar-esta-tarde_1779901631
 - Imagen: https://pxcdn.eldeber.com.bo/eldeber/052026/1779902443793.jpeg?&cw=1200&ch=630
@@ -444,8 +431,7 @@ Cobertura similar:
 - Oxígeno: https://oxigeno.bo/paz-advierte-a-campesinos-y-la-cob-para-que-accedan-al-dialogo-tengo-instrumentos-constitucionales-el-tiempo-se-acaba/
 
 ## 14. Guadalajara tendrá más de 18.000 personas encargadas de la seguridad durante el Mundial
-- Fecha: 2026-05-27
-- Hora: 17:07:06
+- Publicado: 2026-05-27T17:07:06+00:00
 - Fuente: El Deber
 - URL: https://eldeber.com.bo/deportes/guadalajara-tendra-18-000-personas-encargadas-seguridad-mundial_1779901617
 - Imagen: https://cdn.diez.bo/diez/052026/1779901495079.jpg
@@ -480,8 +466,7 @@ Cobertura similar:
 - La Patria: https://lapatria.bo/global/durante-el-mundial-18-000-efectivos-resguardaran-guadalajara/
 
 ## 15. Una madre y su hijo sufren un violento asalto a bordo de un microbús en Santa Cruz - La Patria 3.0
-- Fecha: 2026-05-27
-- Hora: 16:45:27
+- Publicado: 2026-05-27T16:45:27+00:00
 - Fuente: La Patria
 - URL: https://lapatria.bo/actualidad/una-madre-y-su-hijo-sufren-un-violento-asalto-a-bordo-de-un-microbus-en-santa-cruz/
 - Imagen: https://lapatria.bo/wp-content/uploads/2026/05/6a171c4c92ed4.jpg
@@ -540,8 +525,7 @@ Cobertura similar:
 - La Razón: https://larazon.bo/ciudades/2026/05/27/santa-cruz-una-mujer-fue-asaltada-dentro-de-un-micro/
 
 ## 16. Una diputada argentina participa de movilizaciones en El Alto
-- Fecha: 2026-05-27
-- Hora: 16:41:14
+- Publicado: 2026-05-27T16:41:14+00:00
 - Fuente: La Razón
 - URL: https://larazon.bo/nacional/2026/05/27/una-diputada-argentina-participa-de-movilizaciones-en-el-alto/
 - Imagen: https://larazon.bo/wp-content/uploads/2026/05/diputada-argentina_101-15563640_20260527125440-1.webp
@@ -572,8 +556,7 @@ Cobertura similar:
 - Oxígeno: https://oxigeno.bo/migracion-anuncia-acciones-ante-cancilleria-por-intromision-de-diputada-argentina-en-asuntos-de-bolivia/
 
 ## 17. Bajo fuerte dispositivo de seguridad trasladan a capo del PCC a Brasil
-- Fecha: 2026-05-27
-- Hora: 16:36:44
+- Publicado: 2026-05-27T16:36:44+00:00
 - Fuente: El Deber
 - URL: https://eldeber.com.bo/santa-cruz/fuerte-dispositivo-seguridad-trasladan-capo-pcc-brasil_1779899804
 - Imagen: https://pxcdn.eldeber.com.bo/eldeber/052026/1779900628669.jpeg?&cw=1200&ch=630
@@ -596,8 +579,7 @@ Cobertura similar:
 - La Patria: https://lapatria.bo/enfoque-nacional/trasladan-a-lider-del-pcc-a-brasil/
 
 ## 18. Una diputada de izquierda argentina llega hasta El Alto y destaca las protestas que “pusieron en jaque” al Gobierno
-- Fecha: 2026-05-27
-- Hora: 16:36:08
+- Publicado: 2026-05-27T16:36:08+00:00
 - Fuente: El Deber
 - URL: https://eldeber.com.bo/pais/diputada-argentina-llega-alto-destaca-protestas-pusieron-jaque-gobierno_1779899768
 - Imagen: https://pxcdn.eldeber.com.bo/eldeber/052026/1779899683546.jpg?&cw=1200&ch=630
@@ -632,8 +614,7 @@ Cobertura similar:
 - Oxígeno: https://oxigeno.bo/diputada-socialista-de-argentina-participo-en-movilizaciones-en-senkata-y-discursa-contra-el-gobierno-de-paz/
 
 ## 19. Hallan más de Bs 1 millón en el vehículo de un Policía
-- Fecha: 2026-05-27
-- Hora: 16:25:10
+- Publicado: 2026-05-27T16:25:10+00:00
 - Fuente: La Razón
 - URL: https://larazon.bo/nacional/2026/05/27/hallan-mas-de-bs-1-millon-en-el-vehiculo-de-un-policia/
 - Imagen: https://larazon.bo/wp-content/uploads/2026/05/709550098-1523151912716860-651540422_101-15563091_20260527122756.webp
@@ -667,8 +648,7 @@ Cobertura similar:
 - La Patria: https://lapatria.bo/enfoque-nacional/aeropuerto-de-trinidad-hallazgo-de-121-000-dolares-bs-11-millones-y-un-arma/
 
 ## 20. Choferes de La Paz declaran paro indefinido desde el miércoles y sus bases ya piden la renuncia de Paz
-- Fecha: 2026-05-27
-- Hora: 16:23:06
+- Publicado: 2026-05-27T16:23:06+00:00
 - Fuente: Oxígeno
 - URL: https://oxigeno.bo/choferes-de-la-paz-declaran-paro-indefinido-desde-el-miercoles-y-sus-bases-ya-piden-la-renuncia-de-paz/
 - Imagen: https://oxigeno.bo/wp-content/uploads/2026/01/autos_lapaz-1.jpg
@@ -693,8 +673,7 @@ Cobertura similar:
 - El Mundo: https://elmundo.com.bo/choferes-en-la-paz-van-a-paro-indefinido-piden-dimision-de-paz/
 
 ## 21. Se instala el consejo económico social liderado por Rodrigo Paz
-- Fecha: 2026-05-27
-- Hora: 16:07:56
+- Publicado: 2026-05-27T16:07:56+00:00
 - Fuente: El Deber
 - URL: https://eldeber.com.bo/pais/instala-consejo-economico-social-liderado-rodrigo-paz_1779898076
 - Imagen: https://pxcdn.eldeber.com.bo/eldeber/052026/1779898615129.jpeg?&cw=1200&ch=630
@@ -713,8 +692,7 @@ Cobertura similar:
 - El Deber: https://eldeber.com.bo/pais/buscan-pacificacion-pais-dos-escenarios-dialogo-paz_1779891932
 
 ## 22. Las madres sostienen una economía que todavía no aprende a cuidarlas
-- Fecha: 2026-05-27
-- Hora: 15:28:28
+- Publicado: 2026-05-27T15:28:28+00:00
 - Fuente: El Deber
 - URL: https://eldeber.com.bo/pais/madres-sostienen-economia-todavia-no-aprende-cuidarlas_1779895708
 - Imagen: https://pxcdn.eldeber.com.bo/eldeber/052026/1779895127125.jpeg?&cw=1200&ch=630
@@ -771,8 +749,7 @@ Cobertura similar:
 - Sumando Voces: https://sumandovoces.com.bo/entre-el-empleo-y-el-cuidado-la-carga-invisible-de-ser-madre/
 
 ## 23. Lupo representa al Gobierno en el diálogo convocado por Lara
-- Fecha: 2026-05-27
-- Hora: 15:12:23
+- Publicado: 2026-05-27T15:12:23+00:00
 - Fuente: Los Tiempos
 - URL: https://www.lostiempos.com/actualidad/pais/20260527/lupo-representa-al-gobierno-dialogo-convocado-lara
 - Imagen: https://www.lostiempos.com/sites/default/files/media_imagen/2026/5/27/lupo_en_la_vicepresidencia_ed_va.jpg
@@ -799,8 +776,7 @@ Cobertura similar:
 - El Deber: https://eldeber.com.bo/pais/buscan-pacificacion-pais-dos-escenarios-dialogo-paz_1779891932
 
 ## 24. Always Ready cayó ante Liga de Quito y se despidió de la Libertadores
-- Fecha: 2026-05-27
-- Hora: 14:41:22
+- Publicado: 2026-05-27T14:41:22+00:00
 - Fuente: ATB Digital
 - URL: https://www.atb.com.bo/2026/05/27/always-ready-cayo-ante-liga-de-quito-y-se-despidio-de-la-libertadores/
 - Imagen: https://142.11.196.137/wp-content/uploads/2022/11/logo-ATB-DIGITAL-2022-b-768x291-1.png
@@ -828,8 +804,7 @@ Cobertura similar:
 - Oxígeno: https://oxigeno.bo/libertadores-always-no-aguanto-la-ventaja-en-ecuador-perdio-ante-la-liga-de-quito-y-cerro-una-copa-para-el-olvido/
 
 ## 25. Estado de Excepción: Lara presenta Acción de Amparo Constitucional para frenar la abrogación de la Ley 1341
-- Fecha: 2026-05-27
-- Hora: 14:28:40
+- Publicado: 2026-05-27T14:28:40+00:00
 - Fuente: Oxígeno
 - URL: https://oxigeno.bo/estado-de-excepcion-lara-presenta-accion-de-amparo-constitucional-para-frenar-la-abrogacion-de-la-ley-1341/
 - Imagen: https://oxigeno.bo/wp-content/uploads/2026/02/lara_conf4.jpg
@@ -868,8 +843,7 @@ Cobertura similar:
 - Oxígeno: https://oxigeno.bo/diputados-sanciona-la-norma-que-abroga-la-ley-que-regula-los-estados-de-excepcion/
 
 ## 26. Buscan la pacificación del país en dos escenarios de diálogo en La Paz
-- Fecha: 2026-05-27
-- Hora: 14:25:32
+- Publicado: 2026-05-27T14:25:32+00:00
 - Fuente: El Deber
 - URL: https://eldeber.com.bo/pais/buscan-pacificacion-pais-dos-escenarios-dialogo-paz_1779891932
 - Imagen: https://pxcdn.eldeber.com.bo/eldeber/052026/1779891859291.jpeg?&cw=1200&ch=630
@@ -904,8 +878,7 @@ Cobertura similar:
 - Los Tiempos: https://www.lostiempos.com/actualidad/pais/20260527/lupo-representa-al-gobierno-dialogo-convocado-lara
 
 ## 27. Diputados sanciona la norma que abroga la Ley que regula los Estados de Excepción
-- Fecha: 2026-05-27
-- Hora: 14:12:20
+- Publicado: 2026-05-27T14:12:20+00:00
 - Fuente: Oxígeno
 - URL: https://oxigeno.bo/diputados-sanciona-la-norma-que-abroga-la-ley-que-regula-los-estados-de-excepcion/
 - Imagen: https://oxigeno.bo/wp-content/uploads/2026/05/diputados_sesion_virtual1.png
@@ -936,8 +909,7 @@ Cobertura similar:
 - Oxígeno: https://oxigeno.bo/diputados-modifica-el-orden-del-dia-para-tratar-la-abrogacion-de-la-ley-que-regula-los-estados-de-excepcion/
 
 ## 28. Paz no, Lupo sí: El Gobierno asiste a la reunión convocada por Lara y la ALP para buscar salidas a las crisis
-- Fecha: 2026-05-27
-- Hora: 14:11:30
+- Publicado: 2026-05-27T14:11:30+00:00
 - Fuente: Oxígeno
 - URL: https://oxigeno.bo/paz-no-lupo-si-el-gobierno-asiste-a-la-reunion-convocada-por-lara-y-la-alp-para-buscar-salidas-a-las-crisis/
 - Imagen: https://oxigeno.bo/wp-content/uploads/2026/05/dialogo_vicepresidencia_26.5.jpg
@@ -963,8 +935,7 @@ Cobertura similar:
 - Los Tiempos: https://www.lostiempos.com/actualidad/pais/20260527/suman-sectores-que-piden-dialogo-lara-cita-paz-dirigentes-negociar
 
 ## 29. Tras decomiso de encomienda de Bs 350 mil en el aeropuerto de Trinidad, hallan más dinero y un arma de fuego
-- Fecha: 2026-05-27
-- Hora: 14:04:48
+- Publicado: 2026-05-27T14:04:48+00:00
 - Fuente: El Deber
 - URL: https://eldeber.com.bo/pais/decomiso-encomienda-bs-350-mil-aeropuerto-trinidad-hallan-dinero-arma-fuego_1779890688
 - Imagen: https://pxcdn.eldeber.com.bo/eldeber/052026/1779883764734.jpg?&cw=1200&ch=630
@@ -998,8 +969,7 @@ Cobertura similar:
 - La Razón: https://larazon.bo/nacional/2026/05/27/hallan-mas-de-bs-1-millon-en-el-vehiculo-de-un-policia/
 
 ## 30. Suman sectores que piden diálogo y Lara cita a Paz y dirigentes a negociar
-- Fecha: 2026-05-27
-- Hora: 13:24:14
+- Publicado: 2026-05-27T13:24:14+00:00
 - Fuente: Los Tiempos
 - URL: https://www.lostiempos.com/actualidad/pais/20260527/suman-sectores-que-piden-dialogo-lara-cita-paz-dirigentes-negociar
 - Imagen: https://www.lostiempos.com/sites/default/files/media_imagen/2026/5/27/4_p1_marka_registrada.jpg
@@ -1035,8 +1005,7 @@ Cobertura similar:
 - Oxígeno: https://oxigeno.bo/lara-y-jefes-de-bancada-impulsan-una-comision-de-dialogo-convocan-al-gobierno-sectores-movilizados/
 
 ## 31. Entre el empleo y el cuidado: la carga invisible de ser madre -
-- Fecha: 2026-05-27
-- Hora: 13:00:00
+- Publicado: 2026-05-27T13:00:00+00:00
 - Fuente: Sumando Voces
 - URL: https://sumandovoces.com.bo/entre-el-empleo-y-el-cuidado-la-carga-invisible-de-ser-madre/
 - Imagen: https://sumandovoces.com.bo/wp-content/uploads/2026/05/WhatsApp-Image-2026-05-27-at-12.29.15-AM.jpeg
@@ -1071,8 +1040,7 @@ Cobertura similar:
 - El Deber: https://eldeber.com.bo/pais/madres-sostienen-economia-todavia-no-aprende-cuidarlas_1779895708
 
 ## 32. Rusia insta a ciudadanos extranjeros y diplomáticos a evacuar Kiev antes de nuevos ataques
-- Fecha: 2026-05-27
-- Hora: 10:51:34
+- Publicado: 2026-05-27T10:51:34+00:00
 - Fuente: Asuntos Centrales
 - URL: https://asuntoscentrales.com/rusia-insta-a-ciudadanos-extranjeros-y-diplomaticos-a-evacuar-kiev-antes-de-nuevos-ataques/
 - Imagen: https://asuntoscentrales.com/wp-content/uploads/2026/05/ki.jpg
@@ -1095,8 +1063,7 @@ Cobertura similar:
 - Eju.tv: https://eju.tv/2026/05/rusia-insta-a-extranjeros-y-personal-diplomatico-a-abandonar-kiev-lo-antes-posible/
 
 ## 33. Paz promulga la abrogación de la Ley de Estados de Excepción en medio de la crisis por bloqueos -
-- Fecha: 2026-05-27
-- Hora: 05:04:57
+- Publicado: 2026-05-27T05:04:57+00:00
 - Fuente: Sumando Voces
 - URL: https://sumandovoces.com.bo/paz-promulga-la-abrogacion-de-la-ley-de-estados-de-excepcion-en-medio-de-la-crisis-por-bloqueos/
 - Imagen: https://sumandovoces.com.bo/wp-content/uploads/2026/05/image-43-1.jpg
@@ -1124,8 +1091,7 @@ Cobertura similar:
 - El Mundo: https://elmundo.com.bo/diputados-abroga-ley-copa-que-regulaba-estados-de-excepcion/
 
 ## 34. Cámara de Diputados aprueba anulación de la Ley 1341 de estados de excepción - La Patria 3.0
-- Fecha: 2026-05-27
-- Hora: 04:04:32
+- Publicado: 2026-05-27T04:04:32+00:00
 - Fuente: La Patria
 - URL: https://lapatria.bo/actualidad/camara-de-diputados-aprueba-anulacion-de-la-ley-1341-de-estados-de-excepcion/
 - Imagen: https://lapatria.bo/wp-content/uploads/2026/05/6a16678bcca9d.jpg
@@ -1180,8 +1146,7 @@ Cobertura similar:
 - La Patria: https://lapatria.bo/actualidad/paz-promulga-abrogacion-ley-1341-de-estados-de-excepcion/
 
 ## 35. Bolívar se juega su clasificación ante Independiente Rivadavia - La Patria 3.0
-- Fecha: 2026-05-27
-- Hora: 03:38:17
+- Publicado: 2026-05-27T03:38:17+00:00
 - Fuente: La Patria
 - URL: https://lapatria.bo/deportes/bolivar-se-juega-su-clasificacion-ante-independiente-rivadavia/
 - Imagen: https://lapatria.bo/wp-content/uploads/2026/05/6a166671b6470.jpg
@@ -1232,8 +1197,7 @@ Cobertura similar:
 - ATB Digital: https://www.atb.com.bo/2026/05/27/en-el-debut-de-restrepo-bolivar-se-juega-la-vida-ante-independiente-rivadavia/
 
 ## 36. Rusia insta a extranjeros y personal diplomático a abandonar Kiev «lo antes posible»
-- Fecha: 2026-05-27
-- Hora: 03:37:49
+- Publicado: 2026-05-27T03:37:49+00:00
 - Fuente: Eju.tv
 - URL: https://eju.tv/2026/05/rusia-insta-a-extranjeros-y-personal-diplomatico-a-abandonar-kiev-lo-antes-posible/
 - Imagen: https://eju.tv/wp-content/uploads/2026/05/6a15dd2e59bf5b62cf287ac7-e1779853025178.jpg
@@ -1268,8 +1232,7 @@ Cobertura similar:
 - Asuntos Centrales: https://asuntoscentrales.com/rusia-insta-a-ciudadanos-extranjeros-y-diplomaticos-a-evacuar-kiev-antes-de-nuevos-ataques/
 
 ## 37. Always Ready se despide con derrota ante Liga de Quito - La Patria 3.0
-- Fecha: 2026-05-27
-- Hora: 02:11:24
+- Publicado: 2026-05-27T02:11:24+00:00
 - Fuente: La Patria
 - URL: https://lapatria.bo/deportes/always-ready-se-despide-con-derrota-ante-liga-de-quito/
 - Imagen: https://lapatria.bo/wp-content/uploads/2026/05/6a165202113c9.jpg
@@ -1321,8 +1284,7 @@ Cobertura similar:
 - Oxígeno: https://oxigeno.bo/libertadores-always-no-aguanto-la-ventaja-en-ecuador-perdio-ante-la-liga-de-quito-y-cerro-una-copa-para-el-olvido/
 
 ## 38. Diputados modifica el Orden del Día para tratar la abrogación de la Ley que regula los Estados de Excepción
-- Fecha: 2026-05-27
-- Hora: 01:03:35
+- Publicado: 2026-05-27T01:03:35+00:00
 - Fuente: Oxígeno
 - URL: https://oxigeno.bo/diputados-modifica-el-orden-del-dia-para-tratar-la-abrogacion-de-la-ley-que-regula-los-estados-de-excepcion/
 - Imagen: https://oxigeno.bo/wp-content/uploads/2026/05/diputados_sesion_virtual.jpg

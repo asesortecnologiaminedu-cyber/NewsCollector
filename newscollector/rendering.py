@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import date
+from datetime import date, timezone
 from pathlib import Path
 from typing import Any
 
 import flask
+from dateutil import parser as date_parser
 
 try:
     from .logging_utils import log_info
@@ -16,6 +17,7 @@ except ImportError:  # pragma: no cover - direct script execution support
     from processing import Clusters, shuffle_content
 
 REPORT_SCHEMA_VERSION = "1.1"
+LEGACY_RECEIVED_DATETIME_FIELD = "dateTimeRecieved"
 
 
 def build_html(
@@ -157,16 +159,25 @@ def _render_markdown_report(canonical_report: dict[str, Any]) -> str:
         pic = cluster.get("pic", "")
         authors = _normalize_text_list(cluster.get("authors") or cluster.get("author"))
         actors = _normalize_text_list(cluster.get("actor") or cluster.get("actors"))
-        cluster_date = cluster.get("date", "")
-        cluster_time = cluster.get("time", "")
+        date_time_news = _normalize_datetime_value(
+            cluster.get("dateTimeNews")
+            or _build_legacy_datetime(
+                cluster.get("date"),
+                cluster.get("time"),
+            )
+        )
+        date_time_received = _normalize_datetime_value(
+            cluster.get("dateTimeReceived")
+            or cluster.get(LEGACY_RECEIVED_DATETIME_FIELD)
+        )
         body = cluster.get("body", "")
         similar = cluster.get("similar", [])
 
         lines.append(f"## {position}. {title}")
-        if cluster_date:
-            lines.append(f"- Fecha: {cluster_date}")
-        if cluster_time:
-            lines.append(f"- Hora: {cluster_time}")
+        if date_time_news:
+            lines.append(f"- Publicado: {date_time_news}")
+        if date_time_received:
+            lines.append(f"- Recibido: {date_time_received}")
         lines.append(f"- Fuente: {source}")
         lines.append(f"- URL: {url}")
         if authors:
@@ -219,8 +230,17 @@ def _build_template_clusters(clusters_dict: Clusters) -> list[dict[str, Any]]:
         main_article = articles[0]
         cluster_data = {
             "position": len(template_clusters) + 1,
-            "date": _get_article_field(main_article, "date"),
-            "time": _get_article_field(main_article, "time"),
+            "dateTimeNews": _get_article_datetime_field(
+                main_article,
+                primary_field="dateTimeNews",
+                fallback_date_field="date",
+                fallback_time_field="time",
+            ),
+            "dateTimeReceived": _get_article_datetime_field(
+                main_article,
+                primary_field="dateTimeReceived",
+                secondary_fields=(LEGACY_RECEIVED_DATETIME_FIELD,),
+            ),
             "source": _get_article_field(main_article, "source"),
             "url": _get_article_field(main_article, "url"),
             "pic": _get_article_field(main_article, "image_url"),
@@ -266,6 +286,44 @@ def _get_article_list_field(article: Any, field: str) -> list[str]:
         value = []
 
     return _normalize_text_list(value)
+
+
+def _get_article_datetime_field(
+    article: Any,
+    primary_field: str,
+    secondary_fields: tuple[str, ...] = (),
+    fallback_date_field: str | None = None,
+    fallback_time_field: str | None = None,
+) -> str:
+    datetime_candidates: list[Any] = [
+        _get_article_raw_field(article, primary_field),
+    ]
+    datetime_candidates.extend(_get_article_raw_field(article, field) for field in secondary_fields)
+
+    for candidate in datetime_candidates:
+        normalized = _normalize_datetime_value(candidate)
+        if normalized:
+            return normalized
+
+    if fallback_date_field is None:
+        return ""
+
+    fallback_date = _get_article_field(article, fallback_date_field)
+    fallback_time = _get_article_field(article, fallback_time_field or "") if fallback_time_field else ""
+    return _normalize_datetime_value(_build_legacy_datetime(fallback_date, fallback_time))
+
+
+def _get_article_raw_field(article: Any, field: str) -> Any:
+    if not field:
+        return None
+
+    try:
+        if hasattr(article, "get"):
+            return article.get(field)
+
+        return article[field]
+    except Exception:
+        return None
 
 
 def _merge_with_existing_report(
@@ -335,13 +393,22 @@ def _normalize_report(report: dict[str, Any]) -> dict[str, Any]:
 
 
 def _normalize_cluster(cluster: dict[str, Any], fallback_news_date: str) -> dict[str, Any]:
-    normalized_date = _normalize_text(cluster.get("date")) or fallback_news_date
-    normalized_time = _normalize_time(cluster.get("time"))
+    normalized_news_datetime = _normalize_datetime_value(
+        cluster.get("dateTimeNews")
+        or _build_legacy_datetime(cluster.get("date"), cluster.get("time"))
+    )
+    if not normalized_news_datetime and fallback_news_date:
+        normalized_news_datetime = _normalize_datetime_value(f"{fallback_news_date}T00:00:00")
+
+    normalized_received_datetime = _normalize_datetime_value(
+        cluster.get("dateTimeReceived")
+        or cluster.get(LEGACY_RECEIVED_DATETIME_FIELD)
+    )
 
     normalized_cluster = {
         "position": 0,
-        "date": normalized_date,
-        "time": normalized_time,
+        "dateTimeNews": normalized_news_datetime,
+        "dateTimeReceived": normalized_received_datetime,
         "source": _normalize_text(cluster.get("source")),
         "url": _normalize_text(cluster.get("url")),
         "pic": _normalize_text(cluster.get("pic") or cluster.get("image_url")),
@@ -413,8 +480,19 @@ def _merge_cluster_values(
 ) -> dict[str, Any]:
     merged_cluster = dict(existing_cluster)
 
-    for field in ("date", "time", "source", "url", "pic", "title", "body"):
-        incoming_value = _normalize_text(incoming_cluster.get(field))
+    for field in (
+        "dateTimeNews",
+        "dateTimeReceived",
+        "source",
+        "url",
+        "pic",
+        "title",
+        "body",
+    ):
+        if field in {"dateTimeNews", "dateTimeReceived"}:
+            incoming_value = _normalize_datetime_value(incoming_cluster.get(field))
+        else:
+            incoming_value = _normalize_text(incoming_cluster.get(field))
         if incoming_value:
             merged_cluster[field] = incoming_value
 
@@ -467,8 +545,8 @@ def _sort_clusters(clusters: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return sorted(
         clusters,
         key=lambda cluster: (
-            _normalize_text(cluster.get("date")),
-            _normalize_time(cluster.get("time")),
+            _normalize_datetime_value(cluster.get("dateTimeNews")),
+            _normalize_datetime_value(cluster.get("dateTimeReceived")),
             _normalize_text(cluster.get("title")).lower(),
             _normalize_text(cluster.get("source")).lower(),
         ),
@@ -491,6 +569,34 @@ def _normalize_time(value: Any) -> str:
         return ""
 
     return time_value.split(" ")[0]
+
+
+def _build_legacy_datetime(date_value: Any, time_value: Any) -> str:
+    normalized_date = _normalize_text(date_value)
+    if not normalized_date:
+        return ""
+
+    normalized_time = _normalize_time(time_value)
+    if not normalized_time:
+        return f"{normalized_date}T00:00:00"
+
+    return f"{normalized_date}T{normalized_time}"
+
+
+def _normalize_datetime_value(value: Any) -> str:
+    raw_value = _normalize_text(value)
+    if not raw_value:
+        return ""
+
+    try:
+        parsed_value = date_parser.parse(raw_value)
+    except Exception:
+        return raw_value
+
+    if parsed_value.tzinfo is None:
+        parsed_value = parsed_value.replace(tzinfo=timezone.utc)
+
+    return parsed_value.replace(microsecond=0).isoformat()
 
 
 def _merge_text_lists(*values: Any) -> list[str]:

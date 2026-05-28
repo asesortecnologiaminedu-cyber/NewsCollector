@@ -5,8 +5,8 @@
   "clusters": [
     {
       "position": 0,
-      "date": "",
-      "time": "",
+      "dateTimeNews": "",
+      "dateTimeReceived": "",
       "source": "",
       "url": "",
       "pic": "",
