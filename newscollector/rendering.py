@@ -249,6 +249,7 @@ def _build_template_clusters(clusters_dict: Clusters) -> list[dict[str, Any]]:
             "authors": _get_article_list_field(main_article, "authors"),
             "actor": _get_article_list_field(main_article, "actor"),
             "similar": [],
+            "riesgo": 0.0,
         }
 
         for similar_article in articles[1:]:
@@ -258,6 +259,16 @@ def _build_template_clusters(clusters_dict: Clusters) -> list[dict[str, Any]]:
                     "url": _get_article_field(similar_article, "url"),
                 }
             )
+
+        raw_riesgo = _get_article_field(main_article, "riesgo")
+        if raw_riesgo:
+            try:
+                cluster_data["riesgo"] = min(1.0, max(0.0, float(raw_riesgo)))
+            except ValueError:
+                pass
+        else:
+            heuristic = 0.1 + len(cluster_data["similar"]) * 0.2 + len(cluster_data["actor"]) * 0.15
+            cluster_data["riesgo"] = round(min(1.0, heuristic), 2)
 
         template_clusters.append(cluster_data)
 
@@ -417,6 +428,7 @@ def _normalize_cluster(cluster: dict[str, Any], fallback_news_date: str) -> dict
         "authors": _normalize_text_list(cluster.get("authors") or cluster.get("author")),
         "actor": _normalize_text_list(cluster.get("actor") or cluster.get("actors")),
         "similar": _normalize_similar_entries(cluster.get("similar")),
+        "riesgo": cluster.get("riesgo", 0.0),
     }
     return normalized_cluster
 

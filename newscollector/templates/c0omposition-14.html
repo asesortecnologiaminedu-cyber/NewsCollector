@@ -96,8 +96,7 @@
         ? (cluster.authors.find((item) => String(item || "").trim()) || "")
         : (cluster.author || cluster.authors || "");
       const author = String(rawAuthor || "").trim();
-      const actual = Math.min(similar.length + 1, 9);
-      const total = Math.min(actual + 2, 10);
+      const riesgo = typeof cluster.riesgo === "number" ? Math.min(1, Math.max(0, cluster.riesgo)) : 0;
       const dateTimeNews = String(
         cluster.dateTimeNews
         || buildLegacyDateTime(cluster.date, cluster.time)
@@ -114,8 +113,7 @@
         company: cluster.source || "Fuente desconocida",
         author: author,
         pic: cluster.pic || cluster.image_url || "",
-        fulfillmentActual: actual,
-        fulfillmentTotal: total,
+        riesgo: riesgo,
         dateTimeNews: dateTimeNews,
         dateTimeReceived: dateTimeReceived,
         url: cluster.url || "#",
@@ -234,9 +232,15 @@
       return parts.join(" | ");
     }
 
+    function getRiskCategory(riesgo) {
+      if (riesgo >= 0.66) return riskCategories[2];
+      if (riesgo >= 0.33) return riskCategories[1];
+      return riskCategories[0];
+    }
+
     rawClusters.forEach((cluster, index) => {
       const order = buildOrderFromCluster(cluster);
-      const lane = riskCategories[index % riskCategories.length];
+      const lane = getRiskCategory(order.riesgo);
 
       order.riskStatus = lane.status;
       order.riskBadge = lane.badge;
@@ -312,8 +316,8 @@
     }
 
     function orderCard(order, statusClass, statusText, progressColor) {
-      const progress = Math.round((order.fulfillmentActual / order.fulfillmentTotal) * 100);
-      const safeBodyText = order.body ? `${order.body.slice(0, 220)}${order.body.length > 220 ? "..." : ""}` : "No hay resumen disponible.";
+      const progress = Math.round(order.riesgo * 100);
+      const safeBodyText = order.body || "No hay resumen disponible.";
       const safeTitle = escapeHtml(order.item);
       const safeSource = escapeHtml(order.company);
       const safeAuthor = escapeHtml(order.author || "");

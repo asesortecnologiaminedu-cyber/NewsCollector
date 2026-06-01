@@ -269,7 +269,14 @@ def _scrape_entry(
         return None, "download"
 
     try:
-        article_content = newspaper.Article(article_link)
+        _config = newspaper.Config()
+        _config.browser_user_agent = (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/120.0.0.0 Safari/537.36"
+        )
+        _config.request_timeout = 30
+        article_content = newspaper.Article(article_link, config=_config)
         article_content.download()
         article_content.parse()
         article_content.nlp()
