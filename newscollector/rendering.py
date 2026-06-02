@@ -18,6 +18,7 @@ except ImportError:  # pragma: no cover - direct script execution support
 
 REPORT_SCHEMA_VERSION = "1.1"
 LEGACY_RECEIVED_DATETIME_FIELD = "dateTimeRecieved"
+BODY_MAX_LENGTH = 200
 
 
 def build_html(
@@ -27,6 +28,7 @@ def build_html(
     template: str,
     output_filename: str,
     template_path: str,
+    news_brief: str = "",
 ) -> bool:
     output_paths = build_outputs(
         clusters_dict=clusters_dict,
@@ -35,6 +37,7 @@ def build_html(
         template=template,
         output_filename=output_filename,
         template_path=template_path,
+        news_brief=news_brief,
     )
     log_info(
         "Wrote consolidated newsletter outputs to "
@@ -50,6 +53,7 @@ def build_outputs(
     template: str,
     output_filename: str,
     template_path: str,
+    news_brief: str = "",
 ) -> dict[str, str]:
     newsletter_app = flask.Flask("newsletter", template_folder=template_path)
     output_paths = _resolve_output_paths(output_filename)
@@ -59,6 +63,7 @@ def build_outputs(
         clusters_dict=clusters_dict,
         news_name=news_name,
         news_date=news_date,
+        news_brief=news_brief,
     )
     canonical_report = _canonicalize_report(consolidated_report)
     merged_report = _merge_with_existing_report(canonical_report, output_paths["json"])
@@ -93,6 +98,7 @@ def _write_html_report(
             template,
             news_name=canonical_report["news_name"],
             news_date=canonical_report["news_date"],
+            news_brief=canonical_report.get("news_brief", ""),
             clusters=canonical_report["clusters"],
             logo_path=logo_path,
         )
@@ -144,6 +150,15 @@ def _render_markdown_report(canonical_report: dict[str, Any]) -> str:
         f"Fecha: {canonical_report['news_date']}",
         "",
     ]
+
+    news_brief = canonical_report.get("news_brief", "")
+    if news_brief:
+        lines.append("## Resumen")
+        lines.append("")
+        lines.append(news_brief)
+        lines.append("")
+        lines.append("---")
+        lines.append("")
 
     clusters = canonical_report.get("clusters", [])
     if not clusters:
@@ -209,12 +224,14 @@ def _build_consolidated_report(
     clusters_dict: Clusters,
     news_name: str,
     news_date: date | str,
+    news_brief: str = "",
 ) -> dict[str, Any]:
     template_clusters = _build_template_clusters(clusters_dict)
     return {
         "schema_version": REPORT_SCHEMA_VERSION,
         "news_name": str(news_name),
         "news_date": str(news_date),
+        "news_brief": news_brief,
         "clusters": template_clusters,
     }
 
@@ -246,6 +263,8 @@ def _build_template_clusters(clusters_dict: Clusters) -> list[dict[str, Any]]:
             "pic": _get_article_field(main_article, "image_url"),
             "title": _get_article_field(main_article, "title"),
             "body": _get_article_field(main_article, "body"),
+            "wc": _get_article_field(main_article, "wc", default=0),
+            "tokens": _get_article_field(main_article, "tokens", default=0),
             "authors": _get_article_list_field(main_article, "authors"),
             "actor": _get_article_list_field(main_article, "actor"),
             "similar": [],
@@ -275,15 +294,14 @@ def _build_template_clusters(clusters_dict: Clusters) -> list[dict[str, Any]]:
     return template_clusters
 
 
-def _get_article_field(article: Any, field: str) -> str:
+def _get_article_field(article: Any, field: str, default: str = "") -> str:
     try:
         if hasattr(article, "get"):
-            value = article.get(field, "")
+            value = article.get(field, default)
         else:
             value = article[field]
     except Exception:
-        value = ""
-
+        value = default
     return str(value or "").strip()
 
 
@@ -355,10 +373,13 @@ def _merge_with_existing_report(
     merged_news_name = normalized_incoming["news_name"] or normalized_existing["news_name"]
     merged_news_date = normalized_incoming["news_date"] or normalized_existing["news_date"]
 
+    merged_brief = normalized_incoming.get("news_brief") or normalized_existing.get("news_brief", "")
+
     return {
         "schema_version": REPORT_SCHEMA_VERSION,
         "news_name": merged_news_name,
         "news_date": merged_news_date,
+        "news_brief": merged_brief,
         "clusters": merged_clusters,
     }
 
@@ -399,6 +420,7 @@ def _normalize_report(report: dict[str, Any]) -> dict[str, Any]:
         "schema_version": REPORT_SCHEMA_VERSION,
         "news_name": news_name,
         "news_date": news_date,
+        "news_brief": _normalize_text(report.get("news_brief")),
         "clusters": positioned,
     }
 
@@ -655,6 +677,12 @@ def _normalize_text_list(value: Any) -> list[str]:
         normalized_values.append(text)
 
     return normalized_values
+
+
+def _truncate_body(body: str, max_length: int = BODY_MAX_LENGTH) -> str:
+    if not body or len(body) <= max_length:
+        return body
+    return body[:max_length].rsplit(" ", 1)[0] + "..." if " " in body[:max_length] else body[:max_length] + "..."
 
 
 def _normalize_text(value: Any) -> str:

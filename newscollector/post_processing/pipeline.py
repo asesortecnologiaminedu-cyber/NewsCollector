@@ -21,6 +21,12 @@ class PostProcessingConfig:
     ai_prompts_file: str | None = None
 
 
+@dataclass(frozen=True)
+class PostProcessingResult:
+    clusters: Clusters
+    news_brief: str = ""
+
+
 class PostProcessingPipeline:
     def __init__(
         self,
@@ -33,14 +39,18 @@ class PostProcessingPipeline:
             prompts_file=self.config.ai_prompts_file,
         )
 
+    @property
+    def news_brief(self) -> str:
+        return self.ai_pipeline.news_brief
+
     def run(
         self,
         clusters: Clusters,
         news_name: str,
         news_date: date | str,
-    ) -> Clusters:
+    ) -> PostProcessingResult:
         if not clusters:
-            return clusters
+            return PostProcessingResult(clusters=clusters)
 
         processed_clusters = clusters
         if self.config.enable_ai_post_processing:
@@ -51,7 +61,10 @@ class PostProcessingPipeline:
                 news_date=news_date,
             )
 
-        return processed_clusters
+        return PostProcessingResult(
+            clusters=processed_clusters,
+            news_brief=self.news_brief,
+        )
 
 
 def run_post_processing(
@@ -61,7 +74,7 @@ def run_post_processing(
     enable_ai_post_processing: bool = True,
     openrouter_model: str | None = None,
     ai_prompts_file: str | None = None,
-) -> Clusters:
+) -> PostProcessingResult:
     pipeline = PostProcessingPipeline(
         config=PostProcessingConfig(
             enable_ai_post_processing=enable_ai_post_processing,

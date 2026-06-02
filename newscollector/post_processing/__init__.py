@@ -1,3 +1,13 @@
-from .pipeline import PostProcessingConfig, PostProcessingPipeline, run_post_processing
+from .pipeline import (
+    PostProcessingConfig,
+    PostProcessingPipeline,
+    PostProcessingResult,
+    run_post_processing,
+)
 
-__all__ = ["PostProcessingConfig", "PostProcessingPipeline", "run_post_processing"]
+__all__ = [
+    "PostProcessingConfig",
+    "PostProcessingPipeline",
+    "PostProcessingResult",
+    "run_post_processing",
+]

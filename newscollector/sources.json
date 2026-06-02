@@ -22,6 +22,7 @@
   "Agencia Boliviana de Información (ABI)": {
     "rss": [
       "https://abi.bo/feed/",
+      "https://abi.bo/rss-abi/",
       "https://abi.bo/index.php/economia/feed",
       "https://abi.bo/index.php/politica/feed"
     ]
@@ -48,6 +49,7 @@
   "Erbol Digital": {
     "rss": [
       "https://erbol.com.bo/rss.xml",
+      "https://erbol.com.bo/feed",
       "https://erbol.com.bo/nacional/feed"
     ]
   },
@@ -73,7 +75,8 @@
 
   "Opinión Cochabamba": {
     "rss": [
-      "https://www.opinion.com.bo/rss/portada"
+      "https://www.opinion.com.bo/rss/portada",
+      "https://www.opinion.com.bo/rss/listado/"
     ]
   },
 
@@ -153,7 +156,8 @@
 
   "Oxígeno": {
     "rss": [
-      "https://oxigeno.bo/rss.xml"
+      "https://oxigeno.bo/rss.xml",
+      "https://oxigeno.bo/feed"
     ]
   },
 
@@ -195,7 +199,8 @@
 
   "FM Bolivia": {
     "rss": [
-      "https://fmbolivia.com.bo/feed/"
+      "https://fmbolivia.com.bo/feed/",
+      "https://fmbolivia.com.bo/feed"
     ]
   },
 
@@ -286,6 +291,18 @@
   "News Digitales Bolivia": {
     "rss": [
       "https://newsdigitales.com/feed/"
+    ]
+  },
+
+  "Infobae": {
+    "rss": [
+      "https://www.infobae.com/arc/outboundfeeds/rss/"
+    ]
+  },
+
+  "Deutsche Welle": {
+    "rss": [
+      "https://rss.dw.com/xml/rss-sp-all"
     ]
   },
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -395,6 +396,111 @@ class PostProcessingTests(unittest.TestCase):
         self.assertEqual(
             processed_clusters[0][0]["title"],
             'Rodrigo Paz afirma: "Evo Morales va a acabar en la justicia"',
+        )
+
+
+UKRAINE_ARTICLE = {
+    "title": "Qué dijo Rusia tras el nuevo ataque contra civiles que dejó al menos 18 muertos y más de 100 heridos en Ucrania",
+    "body": (
+        "Rusia lanzó un nuevo ataque masivo con 656 drones y 73 misiles contra Ucrania: "
+        "al menos 13 muertos y decenas de heridos. Mientras edificios residenciales colapsaban, "
+        "una maternidad era alcanzada por las explosiones y equipos de rescate trabajaban entre "
+        "los escombros, Moscú defendió el ataque masivo lanzado contra Ucrania como una respuesta "
+        "legítima a supuestos actos terroristas de Kiev. El Ministerio de Defensa ruso justificó "
+        "este martes la ofensiva aérea que dejó al menos 18 muertos entre ellos un niño y más de "
+        "un centenar de heridos en distintas regiones ucranianas, al afirmar que los bombardeos "
+        "estaban dirigidos exclusivamente contra objetivos militares e infraestructura vinculada "
+        "al esfuerzo bélico de Ucrania. La explicación llegó horas después de que Rusia lanzara "
+        "uno de los mayores ataques de los últimos meses, con 73 misiles y 656 drones disparados "
+        "contra distintas ciudades del país, entre ellas Kiev, Dnipró, Kharkiv, Poltava y "
+        "Zaporizhzhia. El Ministerio de Defensa ruso justificó la ofensiva en Ucrania como "
+        "respuesta a supuestos actos terroristas de Kiev, alegando impacto solo en objetivos "
+        "militares. Durante la noche, en respuesta a los actos terroristas del régimen de Kiev, "
+        "las Fuerzas Armadas de la Federación Rusa llevaron a cabo un ataque masivo utilizando "
+        "armas de alta precisión de largo alcance aéreas, terrestres y marítimas, señaló el "
+        "Ministerio de Defensa ruso en un comunicado. Según Moscú, la ofensiva tuvo como "
+        "objetivo instalaciones del complejo militar-industrial ucraniano, infraestructura "
+        "energética, redes de transporte utilizadas por el Ejército y aeródromos militares. "
+        "El ministerio aseguró además que se emplearon misiles hipersónicos y drones de ataque, "
+        "y sostuvo que todos los objetivos fueron alcanzados. En Kiev, los bombardeos "
+        "alcanzaron edificios residenciales en varios distritos de la capital, provocando la "
+        "muerte de al menos seis personas y dejando decenas de heridos. Uno de los episodios "
+        "más graves ocurrió en el distrito de Podil, donde un edificio residencial sufrió un "
+        "colapso parcial. Las autoridades locales denunciaron que se utilizó una táctica de "
+        "doble golpe, consistente en lanzar un segundo ataque poco después del primero, cuando "
+        "los equipos de emergencia ya se encontraban trabajando en la zona. En la región de "
+        "Dnipropetrovsk, los ataques dejaron al menos 12 muertos y unos 35 heridos en la "
+        "ciudad de Dnipró. Entre las víctimas había un niño cuyo cuerpo fue recuperado entre "
+        "los escombros."
+    ),
+    "source": "Eju.tv",
+    "url": "https://eju.tv/...",
+    "image_url": "",
+    "riesgo": 0.5,
+}
+
+UKRAINE_AI_WORDS = (
+    "Rusia lanzó un ataque masivo contra Ucrania con 73 misiles y 656 drones "
+    "dejando al menos 18 muertos y más de cien heridos. El Ministerio de Defensa "
+    "ruso justificó la ofensiva como respuesta a supuestos actos terroristas de Kiev "
+    "y aseguró que los bombardeos apuntaron solo a objetivos militares e infraestructura "
+    "energética. Las autoridades ucranianas reportaron graves daños en edificios "
+    "residenciales en Kiev Dnipró y otras ciudades. En el distrito Podil de la capital "
+    "un edificio colapsó parcialmente tras un ataque con táctica de doble golpe que "
+    "impactó también a los equipos de rescate. En Dnipró doce personas murieron entre "
+    "ellas un niño. Una maternidad en Odesa fue alcanzada pero sin víctimas fatales. "
+    "Ucrania afirma que logró interceptar gran parte de los proyectiles. La comunidad "
+    "internacional condenó el ataque y pidió una desescalada inmediata del conflicto "
+    "que ya lleva más de cuatro años. Los equipos de emergencia continúan trabajando "
+    "entre los escombros en busca de más víctimas mientras crece la preocupación por "
+    "la escalada bélica. Organizaciones humanitarias denunciaron que los ataques contra "
+    "zonas residenciales constituyen violaciones del derecho internacional humanitario. "
+    "Rusia por su parte insiste en que solo actúa en defensa propia y que sus ataques "
+    "son quirúrgicos contra infraestructura militar. La guerra sigue cobrando víctimas "
+    "civiles atrapadas entre ambos bandos."
+)
+
+UKRAINE_AI_RESPONSE = json.dumps({
+    "title": "Rusia justifica ataque masivo contra Ucrania como respuesta a supuestos actos terroristas de Kiev",
+    "body": UKRAINE_AI_WORDS,
+})
+
+
+class UkranianNewsBriefTest(unittest.TestCase):
+    def test_rewrite_body_between_150_and_220_words(self) -> None:
+        clusters = {0: [dict(UKRAINE_ARTICLE)]}
+        step = RewriteMainHeadlineStep(
+            client=_ReturningOpenRouterClient(UKRAINE_AI_RESPONSE),
+        )
+
+        processed = step.run(clusters=clusters, news_name="Test", news_date="2026-06-02")
+        body = processed[0][0]["body"]
+        word_count = len(body.split())
+
+        self.assertGreaterEqual(
+            word_count, 150,
+            f"Body has {word_count} words, expected at least 150. Body: {body[:100]}...",
+        )
+        self.assertLessEqual(
+            word_count, 220,
+            f"Body has {word_count} words, expected at most 220. Body: {body[:100]}...",
+        )
+
+    def test_rewrite_does_not_exceed_500_words(self) -> None:
+        clusters = {0: [dict(UKRAINE_ARTICLE)]}
+        long_body = "palabra " * 600
+        long_response = f'{{"title": "Título", "body": "{long_body}"}}'
+        step = RewriteMainHeadlineStep(
+            client=_ReturningOpenRouterClient(long_response),
+        )
+
+        processed = step.run(clusters=clusters, news_name="Test", news_date="2026-06-02")
+        body = processed[0][0]["body"]
+        word_count = len(body.split())
+
+        self.assertLessEqual(
+            word_count, 500,
+            f"Body has {word_count} words, expected max 500.",
         )
 
 

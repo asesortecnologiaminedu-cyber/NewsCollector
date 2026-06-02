@@ -6,7 +6,7 @@ from typing import Any
 
 from .config import load_ai_post_processing_config
 from .openrouter import OpenRouterClient, OpenRouterSettings
-from .steps import AIPostProcessingStep, RewriteMainHeadlineStep
+from .steps import AIPostProcessingStep, GenerateNewsBriefStep, RewriteMainHeadlineStep
 
 Clusters = dict[int, list[Any]]
 
@@ -26,9 +26,17 @@ class AIPostProcessingPipeline:
         self,
         steps: list[AIPostProcessingStep],
         config: AIPostProcessingConfig | None = None,
+        generate_brief_step: GenerateNewsBriefStep | None = None,
     ) -> None:
         self.steps = steps
         self.config = config or AIPostProcessingConfig()
+        self._generate_brief_step = generate_brief_step
+
+    @property
+    def news_brief(self) -> str:
+        if self._generate_brief_step is not None:
+            return self._generate_brief_step.brief
+        return ""
 
     @classmethod
     def default(
@@ -63,6 +71,8 @@ class AIPostProcessingPipeline:
             )
         )
         rewrite_prompt_config = loaded_config["rewrite_main_headline"]
+        brief_prompt_config = loaded_config.get("generate_news_brief", {})
+
         steps: list[AIPostProcessingStep] = [
             RewriteMainHeadlineStep(
                 client=client,
@@ -70,7 +80,23 @@ class AIPostProcessingPipeline:
                 user_prompt_template=rewrite_prompt_config["user_prompt_template"],
             )
         ]
-        return cls(steps=steps, config=config)
+
+        generate_brief_step: GenerateNewsBriefStep | None = None
+        if brief_prompt_config:
+            generate_brief_step = GenerateNewsBriefStep(
+                client=client,
+                system_prompt_template=brief_prompt_config.get(
+                    "system_prompt_template",
+                    GenerateNewsBriefStep.system_prompt_template,
+                ),
+                user_prompt_template=brief_prompt_config.get(
+                    "user_prompt_template",
+                    GenerateNewsBriefStep.user_prompt_template,
+                ),
+            )
+            steps.append(generate_brief_step)
+
+        return cls(steps=steps, config=config, generate_brief_step=generate_brief_step)
 
     def run(
         self,

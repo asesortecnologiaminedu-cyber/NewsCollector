@@ -30,6 +30,7 @@ class OpenRouterClient:
         self.api_key = self.settings.api_key or load_openrouter_api_key()
         self._active_model = self.settings.model
         self._healthcheck_results: dict[str, bool] | None = None
+        self._last_response_tokens: dict[str, int] | None = None
 
     def is_configured(self) -> bool:
         return bool(self.api_key)
@@ -221,5 +222,16 @@ class OpenRouterClient:
         cleaned_content = str(message_content).strip()
         if not cleaned_content:
             raise RuntimeError("OpenRouter response did not include text content.")
+
+        # Extract token usage from response
+        usage = response_payload.get("usage", {})
+        if usage:
+            self._last_response_tokens = {
+                "prompt_tokens": usage.get("prompt_tokens", 0),
+                "completion_tokens": usage.get("completion_tokens", 0),
+                "total_tokens": usage.get("total_tokens", 0),
+            }
+        else:
+            self._last_response_tokens = None
 
         return cleaned_content

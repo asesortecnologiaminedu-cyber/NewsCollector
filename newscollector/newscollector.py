@@ -30,7 +30,7 @@ if __package__:
         shuffle_content,
         write_dataframe,
     )
-    from .post_processing import run_post_processing
+    from .post_processing import PostProcessingResult, run_post_processing
     from .rendering import build_html
     from .scraping import scrape_sources
 else:
@@ -57,7 +57,7 @@ else:
         shuffle_content,
         write_dataframe,
     )
-    from post_processing import run_post_processing  # type: ignore[no-redef]
+    from post_processing import PostProcessingResult, run_post_processing  # type: ignore[no-redef]
     from rendering import build_html  # type: ignore[no-redef]
     from scraping import scrape_sources  # type: ignore[no-redef]
 
@@ -118,13 +118,14 @@ class NewsCollector:
                     f"Generated {len(featured_clusters)} clusters with sizes: {cluster_sizes}"
                 )
 
-            featured_clusters = run_post_processing(
+            post_result = run_post_processing(
                 clusters=featured_clusters,
                 news_name=self.news_name,
                 news_date=self.news_date,
                 enable_ai_post_processing=self.ai_post_processing,
                 ai_prompts_file=self.ai_post_processing_prompts_file,
             )
+            featured_clusters = post_result.clusters
 
             Processer.build_html(
                 featured_clusters,
@@ -133,6 +134,7 @@ class NewsCollector:
                 self.template,
                 self.output_filename,
                 self.template_path,
+                news_brief=post_result.news_brief,
             )
             print(
                 "NewsCollector completed successfully. "
@@ -196,6 +198,7 @@ class Processer:
         template: str,
         output_filename: str,
         template_path: str,
+        news_brief: str = "",
     ) -> bool:
         try:
             return build_html(
@@ -205,6 +208,7 @@ class Processer:
                 template=template,
                 output_filename=output_filename,
                 template_path=template_path,
+                news_brief=news_brief,
             )
         except Exception as exc:
             raise RuntimeError('Error in "Processer.build_html()"') from exc
